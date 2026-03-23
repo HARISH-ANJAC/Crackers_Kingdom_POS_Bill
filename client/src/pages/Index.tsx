@@ -43,25 +43,25 @@ interface Product {
 }
 
 const featuredProducts: Product[] = [
-  { name: "Color Sparklers",     price: "₹60",  rating: 4.8, reviews: 92, image: sparklers,  tag: "Sparklers",   badgeIcon: Star,  badge: "Bestseller" },
-  { name: "Giant Flower Pots",   price: "₹120", rating: 4.7, reviews: 74, image: flowerPots, tag: "Flower Pots", badgeIcon: Leaf,  badge: "Popular"    },
-  { name: "Ground Chakra Deluxe",price: "₹125", rating: 4.6, reviews: 61, image: chakkars,   tag: "Chakkars",   badgeIcon: Flame, badge: "Hot Pick"   },
+  { name: "Color Sparklers", price: "₹60", rating: 4.8, reviews: 92, image: sparklers, tag: "Sparklers", badgeIcon: Star, badge: "Bestseller" },
+  { name: "Giant Flower Pots", price: "₹120", rating: 4.7, reviews: 74, image: flowerPots, tag: "Flower Pots", badgeIcon: Leaf, badge: "Popular" },
+  { name: "Ground Chakra Deluxe", price: "₹125", rating: 4.6, reviews: 61, image: chakkars, tag: "Chakkars", badgeIcon: Flame, badge: "Hot Pick" },
 ];
 
 const categories = [
-  { name: "CHAKKARS",        image: chakkars,       desc: "Spinning ground wheels" },
-  { name: "FLOWER POTS",     image: flowerPots,     desc: "Fountain of colors"     },
-  { name: "SPARKLERS",       image: sparklers,      desc: "Classic & colorful"     },
-  { name: "ROCKETS",         image: rockets,        desc: "Aerial sky bursts"      },
-  { name: "REPEATING SHOTS", image: repeatingShots, desc: "Multi-shot aerial"      },
-  { name: "BOMBS",           image: bombs,          desc: "Loud & powerful"        },
+  { name: "CHAKKARS", image: chakkars, desc: "Spinning ground wheels" },
+  { name: "FLOWER POTS", image: flowerPots, desc: "Fountain of colors" },
+  { name: "SPARKLERS", image: sparklers, desc: "Classic & colorful" },
+  { name: "ROCKETS", image: rockets, desc: "Aerial sky bursts" },
+  { name: "REPEATING SHOTS", image: repeatingShots, desc: "Multi-shot aerial" },
+  { name: "BOMBS", image: bombs, desc: "Loud & powerful" },
 ];
 
 const stats = [
-  { icon: Users,   value: "500+",     label: "HAPPY CUSTOMERS"  },
-  { icon: Package, value: "1,000+",   label: "ORDERS FULFILLED" },
-  { icon: Star,    value: "4.8★",     label: "AVG. RATING"      },
-  { icon: MapPin,  value: "Pan India", label: "PARCEL DELIVERY" },
+  { icon: Users, value: "500+", label: "HAPPY CUSTOMERS" },
+  { icon: Package, value: "1,000+", label: "ORDERS FULFILLED" },
+  { icon: Star, value: "4.8★", label: "AVG. RATING" },
+  { icon: MapPin, value: "Pan India", label: "PARCEL DELIVERY" },
 ];
 
 const whyUs = [
@@ -159,7 +159,7 @@ const Index = () => {
               <span className="text-primary italic">The Finest Light</span>
             </h2>
             <p className="text-muted-foreground mt-4 max-w-xl mx-auto text-base leading-relaxed">
-              Discover our wide range of high-quality fireworks sourced directly from Sivakasi — 
+              Discover our wide range of high-quality fireworks sourced directly from Sivakasi —
               perfect for every celebration. Safe, colorful, and spectacularly bright.
             </p>
           </ScrollReveal>
@@ -194,11 +194,11 @@ const Index = () => {
                       </div>
                       <span className="text-xs font-bold text-muted-foreground/60 ml-2 uppercase tracking-tighter">({p.reviews} Enthusiasts)</span>
                     </div>
-                    <Link 
-                      to="/products" 
+                    <Link
+                      to="/products"
                       className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-all group/link"
                     >
-                      Explore Collection 
+                      Explore Collection
                       <ArrowRight size={14} className="group-hover/link:translate-x-2 transition-transform" />
                     </Link>
                   </div>
@@ -220,7 +220,7 @@ const Index = () => {
         <div className="container-narrow">
           <ScrollReveal className="text-center mb-12">
             {/* 🚀 → Rocket */}
-            <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
+            <span className="inline-flex items-center gap-1.5 text-festive-gold text-xs font-semibold uppercase tracking-widest">
               <Rocket size={13} /> Simple Process
             </span>
             <h2 className="font-display text-3xl md:text-4xl font-bold mt-2 text-balance">
@@ -238,7 +238,7 @@ const Index = () => {
                   <span className="text-4xl font-display font-black text-primary/20 absolute top-4 right-4">{item.step}</span>
                   {/* 📋📤📞📦 → lucide icon in a styled container */}
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                    <item.icon size={24} className="text-primary" />
+                    <item.icon size={24} className="text-festive-gold" />
                   </div>
                   <h3 className="font-display font-bold text-card mb-2">{item.title}</h3>
                   <p className="text-card/60 text-sm leading-relaxed">{item.desc}</p>
@@ -326,7 +326,7 @@ const Index = () => {
             <ScrollReveal key={s.label} delay={i * 0.07}>
               <div className="flex flex-col items-center text-center gap-3 group">
                 <div className="w-16 h-16 rounded-[1.5rem] bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500 group-hover:bg-primary/20 group-hover:scale-110 group-hover:-rotate-6">
-                  <s.icon size={28} className="text-primary" />
+                  <s.icon size={28} className="text-festive-gold" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-3xl md:text-4xl font-display font-black text-white italic tracking-tighter">{s.value}</p>
@@ -431,7 +431,7 @@ const Index = () => {
               <Button asChild size="lg" className="rounded-full gap-2 bg-white text-primary hover:bg-white/90 shadow-lg active:scale-[0.97] transition-transform">
                 <Link to="/products">Get My Estimate <ArrowRight size={16} /></Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full gap-2 border-white/30 text-white hover:bg-white/10 active:scale-[0.97] transition-transform">
+              <Button asChild size="lg" variant="secondary" className="rounded-full gap-2 border-white/30 text-white bg-white/10 hover:bg-white/10 active:scale-[0.97] transition-transform">
                 <Link to="/contact">Contact Us</Link>
               </Button>
             </div>

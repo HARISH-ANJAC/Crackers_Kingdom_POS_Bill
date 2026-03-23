@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.jpeg";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -32,7 +32,7 @@ const Navbar = () => {
         <div className="container-narrow section-padding flex items-center justify-between h-20 md:h-24">
           <Link to="/" className="flex items-center gap-3 md:gap-4 group">
             <div className=" h-16 w-20 md:h-20 md:w-24 rounded-sm md:rounded-lg bg-black/70 p-0.5 shadow-md border border-border/50 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
-              <img src={logo} alt="Crackers Kingdom" className="h-16 w-28 md:h-20 md:w-32 object-contain drop-shadow-sm" />
+              <img src={logo} alt="Crackers Kingdom" className="h-16 w-28 md:h-20 md:w-32 object-contain rounded-lg drop-shadow-sm" />
             </div>
             {/* <div className="flex flex-col">
               <span className="font-display font-black text-lg md:text-2xl tracking-tighter text-foreground leading-[0.8] uppercase italic">
