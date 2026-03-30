@@ -1,0 +1,13 @@
+export const SHOP_NAME = "Crackers Kingdom";
+
+export const ADDRESS_LINES = [
+  "M/S NANDHINI TRADERS",
+  "SURVEY NO: 299/13A1C, 299/15A2, DOOR NO: 3/1362/20",
+  "BHARATHI NAGAR - II VISWANATHAM",
+  "SIVAKASI",
+  "VIRUDHUNAGAR",
+] as const;
+
+export const ADDRESS_STREET = `${ADDRESS_LINES[0]}, ${ADDRESS_LINES[1]}, ${ADDRESS_LINES[2]}`;
+export const ADDRESS_LOCALITY = ADDRESS_LINES[3];
+export const ADDRESS_REGION = ADDRESS_LINES[4];

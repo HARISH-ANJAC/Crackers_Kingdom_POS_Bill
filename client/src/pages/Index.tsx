@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import ScrollReveal from "@/components/ScrollReveal";
 import HeroCarousel from "@/components/HeroCarousel";
 import SEO from "@/components/SEO";
+import { ADDRESS_LINES } from "@/lib/businessInfo";
 import sparklers from "@/assets/sparklers.jpg";
 import flowerPots from "@/assets/flower-pots.jpg";
 import chakkars from "@/assets/chakkars.jpg";
@@ -133,7 +134,7 @@ const howItWorks = [
 
 const Index = () => {
   return (
-    <div>
+    <div className="bg-background">
       <SEO
         title="Crackers Kingdom | Premium Sivakasi Fireworks — Nationwide"
         description="Crackers Kingdom is your ultimate nationwide destination for premium Sivakasi fireworks. Exclusive Diwali offers, safe certified crackers, and convenient pan-India parcel delivery. Get your estimate today!"
@@ -146,8 +147,156 @@ const Index = () => {
         <div className="absolute bottom-[20%] -right-[10%] w-[40%] h-[40%] bg-festive-ruby/5 blur-[120px] rounded-full animate-pulse [animation-delay:2s]" />
       </div>
 
+      {/* ── About Preview ── */}
+      <section className="py-20 section-padding bg-linear-to-b from-foreground/5 via-secondary/60 to-background">
+        <div className="container-narrow grid lg:grid-cols-2 gap-12 items-center">
+          <ScrollReveal direction="left">
+            {/* ✨ → Sparkles */}
+            <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
+              <Sparkles size={13} /> Est. 2025 — Sivakasi
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mt-2 leading-tight text-balance">
+              Your Nationwide<br />
+              <span className="text-primary">Fireworks Destination</span>
+            </h2>
+            <p className="text-muted-foreground mt-4 leading-relaxed text-sm">
+              Welcome to Crackers Kingdom — established just last year, yet already making celebrations brighter across India. Based in the fireworks capital of the world, Sivakasi, we are committed to bringing fresh excitement and unparalleled joy to your festivities with a diverse collection ranging from classic sparklers to breathtaking aerial displays.
+            </p>
+            <p className="text-muted-foreground mt-3 leading-relaxed text-sm">
+              While direct doorstep delivery of firecrackers is restricted as per Supreme Court orders, we expertly organize secure transport through reliable registered parcel services — so your fireworks reach you conveniently and legally.
+            </p>
+            <div className="flex flex-wrap gap-4 mt-6">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={18} className="text-primary" />
+                <span className="text-sm font-medium">100% Licensed & Legal</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award size={18} className="text-festive-gold" />
+                <span className="text-sm font-medium">Quality Tested Products</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Truck size={18} className="text-festive-green" />
+                <span className="text-sm font-medium">Pan-India Parcel Service</span>
+              </div>
+            </div>
+            <Button asChild className="mt-6 rounded-full gap-2 active:scale-[0.97] transition-transform" variant="outline">
+              <Link to="/about">Know More About Us <ArrowRight size={14} /></Link>
+            </Button>
+          </ScrollReveal>
+
+          <ScrollReveal direction="right">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 col-span-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <MapPin size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-display font-bold text-lg">{ADDRESS_LINES[0]}</p>
+                    <div className="text-xs text-muted-foreground space-y-0.5">
+                      {ADDRESS_LINES.slice(1).map((line) => (
+                        <p key={line}>{line}</p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-10 h-10 rounded-lg bg-festive-gold/10 flex items-center justify-center mb-3">
+                  <Sparkles size={20} className="text-festive-gold" />
+                </div>
+                <p className="text-2xl font-display font-bold text-primary">40%</p>
+                <p className="text-xs text-muted-foreground mt-1">Off on Bulk Orders This Season</p>
+              </div>
+              <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                  <Phone size={20} className="text-primary" />
+                </div>
+                <p className="text-2xl font-display font-bold">2 Hrs</p>
+                <p className="text-xs text-muted-foreground mt-1">Response guarantee after estimate</p>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ── Why Choose Us ── */}
+      <section className="py-20 section-padding bg-background">
+        <div className="container-narrow">
+          <ScrollReveal className="text-center mb-12">
+            {/* 🏆 → Trophy */}
+            <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
+              <Trophy size={13} /> Why Us
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mt-2">
+              Why Choose <span className="text-primary">Crackers Kingdom?</span>
+            </h2>
+            <p className="text-muted-foreground text-sm mt-3 max-w-md mx-auto">
+              We are committed to quality, safety, and making your festive celebrations unforgettable — every single time.
+            </p>
+          </ScrollReveal>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {whyUs.map((w, i) => (
+              <ScrollReveal key={w.title} delay={i * 0.08}>
+                <div className="bg-card rounded-2xl p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
+                  <div className={`w-12 h-12 rounded-xl ${w.color} flex items-center justify-center mb-4`}>
+                    <w.icon size={22} />
+                  </div>
+                  <h3 className="font-display font-bold text-lg mb-2">{w.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{w.desc}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Categories ── */}
+      <section className="py-20 section-padding bg-linear-to-b from-background via-secondary/60 to-background">
+        <div className="container-narrow">
+          <ScrollReveal>
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                {/* ✨ → Sparkles */}
+                <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
+                  <Sparkles size={13} /> Popular Collections
+                </span>
+                <h2 className="font-display text-3xl md:text-4xl font-bold mt-2">
+                  Shop by <span className="text-primary">Category</span>
+                </h2>
+                <p className="text-muted-foreground text-sm mt-2 max-w-md">
+                  Explore our wide range of premium fireworks, carefully sourced from Sivakasi and categorized for your specific celebration needs.
+                </p>
+              </div>
+              <Link to="/products" className="hidden sm:flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                View All Products <ArrowRight size={14} />
+              </Link>
+            </div>
+          </ScrollReveal>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {categories.map((c, i) => (
+              <ScrollReveal key={c.name} delay={i * 0.07}>
+                <Link to="/products" className="group relative block aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                  <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-linear-to-t from-foreground/80 via-foreground/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4">
+                    <h3 className="font-display font-bold text-card text-lg leading-tight">{c.name}</h3>
+                    <p className="text-card/60 text-xs mt-0.5">{c.desc}</p>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
+          <ScrollReveal className="text-center mt-8 sm:hidden">
+            <Button asChild variant="outline" className="rounded-full gap-2">
+              <Link to="/products">View All Categories <ArrowRight size={14} /></Link>
+            </Button>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* ── Featured Products ── */}
-      <section className="py-20 section-padding">
+      <section className="py-20 section-padding bg-linear-to-b from-background via-background to-foreground/5">
         <div className="container-narrow">
           <ScrollReveal className="text-center mb-16 relative">
             <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/10 blur-3xl rounded-full opacity-50" />
@@ -168,10 +317,10 @@ const Index = () => {
             {featuredProducts.map((p, i) => (
               <ScrollReveal key={p.name} delay={i * 0.1}>
                 <div className="group bg-card rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-border/50">
-                  <div className="relative overflow-hidden aspect-[4/3] p-4">
-                    <div className="w-full h-full rounded-[1.5rem] overflow-hidden relative">
+                  <div className="relative overflow-hidden aspect-4/3 p-4">
+                    <div className="w-full h-full rounded-3xl overflow-hidden relative">
                       <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                     <span className="absolute top-8 left-8 text-[10px] font-black uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm">
                       {p.tag}
@@ -216,11 +365,11 @@ const Index = () => {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-20 section-padding bg-foreground text-card">
+      <section className="py-20 section-padding text-card bg-linear-to-b from-foreground via-footer to-footer">
         <div className="container-narrow">
           <ScrollReveal className="text-center mb-12">
             {/* 🚀 → Rocket */}
-            <span className="inline-flex items-center gap-1.5 text-festive-gold text-xs font-semibold uppercase tracking-widest">
+            <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
               <Rocket size={13} /> Simple Process
             </span>
             <h2 className="font-display text-3xl md:text-4xl font-bold mt-2 text-balance">
@@ -238,7 +387,7 @@ const Index = () => {
                   <span className="text-4xl font-display font-black text-primary/20 absolute top-4 right-4">{item.step}</span>
                   {/* 📋📤📞📦 → lucide icon in a styled container */}
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                    <item.icon size={24} className="text-festive-gold" />
+                    <item.icon size={24} className="text-primary" />
                   </div>
                   <h3 className="font-display font-bold text-card mb-2">{item.title}</h3>
                   <p className="text-card/60 text-sm leading-relaxed">{item.desc}</p>
@@ -249,84 +398,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── About Preview ── */}
-      <section className="py-20 section-padding bg-secondary/50">
-        <div className="container-narrow grid lg:grid-cols-2 gap-12 items-center">
-          <ScrollReveal direction="left">
-            {/* ✨ → Sparkles */}
-            <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
-              <Sparkles size={13} /> Est. 2025 — Sivakasi
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mt-2 leading-tight text-balance">
-              Your Nationwide<br />
-              <span className="text-primary">Fireworks Destination</span>
-            </h2>
-            <p className="text-muted-foreground mt-4 leading-relaxed text-sm">
-              Welcome to Crackers Kingdom — established just last year, yet already making celebrations brighter across India. Based in the fireworks capital of the world, Sivakasi, we are committed to bringing fresh excitement and unparalleled joy to your festivities with a diverse collection ranging from classic sparklers to breathtaking aerial displays.
-            </p>
-            <p className="text-muted-foreground mt-3 leading-relaxed text-sm">
-              While direct doorstep delivery of firecrackers is restricted as per Supreme Court orders, we expertly organize secure transport through reliable registered parcel services — so your fireworks reach you conveniently and legally.
-            </p>
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={18} className="text-primary" />
-                <span className="text-sm font-medium">100% Licensed & Legal</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Award size={18} className="text-festive-gold" />
-                <span className="text-sm font-medium">Quality Tested Products</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Truck size={18} className="text-festive-green" />
-                <span className="text-sm font-medium">Pan-India Parcel Service</span>
-              </div>
-            </div>
-            <Button asChild className="mt-6 rounded-full gap-2 active:scale-[0.97] transition-transform" variant="outline">
-              <Link to="/about">Know More About Us <ArrowRight size={14} /></Link>
-            </Button>
-          </ScrollReveal>
-
-          <ScrollReveal direction="right">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 col-span-2">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <MapPin size={24} className="text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-display font-bold text-lg">Sivakasi, Tamil Nadu</p>
-                    <p className="text-xs text-muted-foreground">2/190-B5, Naranapuram Road, Sivakasi – 629189</p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <div className="w-10 h-10 rounded-lg bg-festive-gold/10 flex items-center justify-center mb-3">
-                  <Sparkles size={20} className="text-festive-gold" />
-                </div>
-                <p className="text-2xl font-display font-bold text-primary">40%</p>
-                <p className="text-xs text-muted-foreground mt-1">Off on Bulk Orders This Season</p>
-              </div>
-              <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
-                  <Phone size={20} className="text-primary" />
-                </div>
-                <p className="text-2xl font-display font-bold">2 Hrs</p>
-                <p className="text-xs text-muted-foreground mt-1">Response guarantee after estimate</p>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
       {/* ── Stats Strip ── */}
-      <section className="py-16 relative overflow-hidden bg-foreground">
+      <section className="py-16 relative overflow-hidden bg-footer border-y border-white/5">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-20" />
         <div className="container-narrow grid grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
           {stats.map((s, i) => (
             <ScrollReveal key={s.label} delay={i * 0.07}>
               <div className="flex flex-col items-center text-center gap-3 group">
-                <div className="w-16 h-16 rounded-[1.5rem] bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500 group-hover:bg-primary/20 group-hover:scale-110 group-hover:-rotate-6">
-                  <s.icon size={28} className="text-festive-gold" />
+                <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500 group-hover:bg-primary/20 group-hover:scale-110 group-hover:-rotate-6">
+                  <s.icon size={28} className="text-primary" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-3xl md:text-4xl font-display font-black text-white italic tracking-tighter">{s.value}</p>
@@ -338,83 +418,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── Why Choose Us ── */}
-      <section className="py-20 section-padding">
-        <div className="container-narrow">
-          <ScrollReveal className="text-center mb-12">
-            {/* 🏆 → Trophy */}
-            <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
-              <Trophy size={13} /> Why Us
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mt-2">
-              Why Choose <span className="text-primary">Crackers Kingdom?</span>
-            </h2>
-            <p className="text-muted-foreground text-sm mt-3 max-w-md mx-auto">
-              We are committed to quality, safety, and making your festive celebrations unforgettable — every single time.
-            </p>
-          </ScrollReveal>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whyUs.map((w, i) => (
-              <ScrollReveal key={w.title} delay={i * 0.08}>
-                <div className="bg-card rounded-2xl p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
-                  <div className={`w-12 h-12 rounded-xl ${w.color} flex items-center justify-center mb-4`}>
-                    <w.icon size={22} />
-                  </div>
-                  <h3 className="font-display font-bold text-lg mb-2">{w.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{w.desc}</p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Categories ── */}
-      <section className="py-20 section-padding bg-secondary/50">
-        <div className="container-narrow">
-          <ScrollReveal>
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                {/* ✨ → Sparkles */}
-                <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
-                  <Sparkles size={13} /> Popular Collections
-                </span>
-                <h2 className="font-display text-3xl md:text-4xl font-bold mt-2">
-                  Shop by <span className="text-primary">Category</span>
-                </h2>
-                <p className="text-muted-foreground text-sm mt-2 max-w-md">
-                  Explore our wide range of premium fireworks, carefully sourced from Sivakasi and categorized for your specific celebration needs.
-                </p>
-              </div>
-              <Link to="/products" className="hidden sm:flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                View All Products <ArrowRight size={14} />
-              </Link>
-            </div>
-          </ScrollReveal>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {categories.map((c, i) => (
-              <ScrollReveal key={c.name} delay={i * 0.07}>
-                <Link to="/products" className="group relative block aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-                  <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
-                  <div className="absolute bottom-4 left-4">
-                    <h3 className="font-display font-bold text-card text-lg leading-tight">{c.name}</h3>
-                    <p className="text-card/60 text-xs mt-0.5">{c.desc}</p>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            ))}
-          </div>
-          <ScrollReveal className="text-center mt-8 sm:hidden">
-            <Button asChild variant="outline" className="rounded-full gap-2">
-              <Link to="/products">View All Categories <ArrowRight size={14} /></Link>
-            </Button>
-          </ScrollReveal>
-        </div>
-      </section>
-
       {/* ── CTA Banner ── */}
-      <section className="py-20 section-padding bg-primary">
+      <section className="py-20 section-padding bg-linear-to-r from-primary via-primary to-festive-gold">
         <div className="container-narrow text-center">
           <ScrollReveal>
             {/* 🎆 → Sparkles */}
@@ -431,7 +436,7 @@ const Index = () => {
               <Button asChild size="lg" className="rounded-full gap-2 bg-white text-primary hover:bg-white/90 shadow-lg active:scale-[0.97] transition-transform">
                 <Link to="/products">Get My Estimate <ArrowRight size={16} /></Link>
               </Button>
-              <Button asChild size="lg" variant="secondary" className="rounded-full gap-2 border-white/30 text-white bg-white/10 hover:bg-white/10 active:scale-[0.97] transition-transform">
+              <Button asChild size="lg" variant="outline" className="rounded-full gap-2 border-white/90 bg-black/10 text-white hover:bg-black/10 active:scale-[0.97] transition-transform">
                 <Link to="/contact">Contact Us</Link>
               </Button>
             </div>

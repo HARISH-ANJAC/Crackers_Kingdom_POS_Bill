@@ -30,6 +30,8 @@ const ScrollTop = () => {
     window.addEventListener("scroll", toggleVisibility, { passive: true });
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
+  const location = useLocation();
+
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -59,7 +61,7 @@ const ScrollTop = () => {
         >
           {/* Subtle glow effect */}
           <div className="absolute inset-0 bg-linear-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          
+
           <ChevronUp className="h-6 w-6 relative z-10 transition-transform duration-300 group-hover:-translate-y-1" strokeWidth={2.5} />
         </motion.button>
       )}

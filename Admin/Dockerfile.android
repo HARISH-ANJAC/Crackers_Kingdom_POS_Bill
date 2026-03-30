@@ -1,0 +1,42 @@
+FROM node:20
+
+# Install Java JDK 17
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk wget unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set Environment Variables for Java and Android
+ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+ENV ANDROID_HOME="/opt/android-sdk"
+ENV ANDROID_SDK_ROOT="/opt/android-sdk"
+ENV PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools"
+
+# Download and Install Android SDK Command Line Tools
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
+    cd ${ANDROID_HOME}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline.zip && \
+    unzip -q cmdline.zip && \
+    rm cmdline.zip && \
+    mv cmdline-tools latest
+
+# Accept licenses and install platform-tools and build-tools
+RUN yes | sdkmanager --licenses && \
+    sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+WORKDIR /app
+
+# Install Node dependencies
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+
+# Copy Project Files
+COPY . .
+
+# Build the Release APK
+WORKDIR /app/android
+RUN chmod +x gradlew
+RUN ./gradlew assembleRelease
+
+CMD ["echo", "APK compilation finished."]

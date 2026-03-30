@@ -17,7 +17,8 @@ import ScrollReveal from "@/components/ScrollReveal";
 import PageHeader from "@/components/PageHeader";
 import SEO from "@/components/SEO";
 import headerBg from "@/assets/header_contact_bg.png";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
+import { ADDRESS_LINES } from "@/lib/businessInfo";
 
 const contactCards = [
   {
@@ -39,7 +40,7 @@ const contactCards = [
   {
     icon: MapPin,
     title: "Our Address",
-    lines: ["2/190-B5, Naranapuram Road,", "Sivakasi – 629189, TN"],
+    lines: [...ADDRESS_LINES],
     note: "Fireworks Capital of India",
     color: "text-festive-green",
     bg: "bg-festive-green/10",
@@ -319,7 +320,6 @@ const Contact = () => {
           <ScrollReveal>
             <div className="mb-4">
               <h2 className="font-display text-2xl font-bold">Find Us on the Map</h2>
-              <p className="text-sm text-muted-foreground mt-1">Sivakasi, Tamil Nadu — The Fireworks Capital of India</p>
             </div>
             <div className="rounded-2xl overflow-hidden shadow-md border border-border/50">
               <iframe
@@ -330,7 +330,7 @@ const Contact = () => {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Crackers Kingdom Location - Sivakasi, Tamil Nadu"
+                title="Crackers Kingdom Location - M/S Nandhini Traders, Viswanatham, Sivakasi"
                 className="w-full"
               />
             </div>

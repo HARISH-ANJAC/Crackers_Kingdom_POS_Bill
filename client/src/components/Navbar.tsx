@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { ArrowRight, Menu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/logo.jpeg";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import logo from "@/assets/logo.png";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -12,94 +13,150 @@ const navLinks = [
   { label: "Contact", to: "/contact" },
 ];
 
+const announcement =
+  "Premium Sivakasi Crackers  -  Get up to 40% bulk offer  -  Estimate now, confirm in 2 hours  -  Pan India legal parcel delivery  -  100% safe and certified products";
+
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
   return (
     <>
-      <div className="bg-primary text-primary-foreground overflow-hidden py-2 font-body text-sm font-semibold">
-        <div className="animate-marquee whitespace-nowrap inline-block">
-          ✨ Exclusive Diwali Offer! Get up to 40% Off on Bulk Orders! ✨&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          🚚 Order via Estimate — Dispatched via Registered Parcel Service to Your City! 🚚&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          ✨ Premium Quality — 100% Safe & Certified Crackers from Sivakasi! ✨&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          ✨ Exclusive Diwali Offer! Get up to 40% Off on Bulk Orders! ✨&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          🚚 Order via Estimate — Dispatched via Registered Parcel Service to Your City! 🚚&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          ✨ Premium Quality — 100% Safe & Certified Crackers from Sivakasi! ✨&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <div className="relative z-40 overflow-hidden border-b border-primary/30 bg-linear-to-r from-primary/95 via-primary to-primary/90 text-primary-foreground">
+        <div className="container-narrow section-padding h-9 flex items-center">
+          <div className="animate-marquee whitespace-nowrap inline-block text-[11px] md:text-xs font-bold tracking-wide uppercase">
+            {announcement}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{announcement}
+          </div>
         </div>
       </div>
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300">
-        <div className="container-narrow section-padding flex items-center justify-between h-20 md:h-24">
-          <Link to="/" className="flex items-center gap-3 md:gap-4 group">
-            <div className=" h-16 w-20 md:h-20 md:w-24 rounded-sm md:rounded-lg bg-black/70 p-0.5 shadow-md border border-border/50 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
-              <img src={logo} alt="Crackers Kingdom" className="h-16 w-28 md:h-20 md:w-32 object-contain rounded-lg drop-shadow-sm" />
+
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl supports-backdrop-filter:bg-background/75">
+        <div className="relative container-narrow section-padding h-20 md:h-24 flex items-center justify-between gap-3">
+          <Link to="/" className="flex items-center gap-3 group min-w-0">
+            <div className="relative top-2 h-22 w-22 md:h-28 md:w-28 rounded-full p-[2px] bg-linear-to-br from-primary via-festive-gold to-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.35),0_10px_26px_hsl(var(--primary)/0.35)] transition-transform duration-300 group-hover:scale-[1.04]">
+              <div className="h-full w-full rounded-full bg-footer/95 ring-1 ring-white/12 flex items-center justify-center overflow-hidden">
+                <img
+                  src={logo}
+                  alt="Crackers Kingdom"
+                  className="h-full w-full rounded-full object-contain p-1"
+                />
+              </div>
             </div>
-            {/* <div className="flex flex-col">
-              <span className="font-display font-black text-lg md:text-2xl tracking-tighter text-foreground leading-[0.8] uppercase italic">
-                CRACKERS
+            <div className="hidden sm:flex flex-col leading-tight min-w-0">
+              <span className="font-display text-[1.05rem] md:text-[1.12rem] font-black text-foreground truncate">
+                Crackers Kingdom
               </span>
-              <span className="font-display font-black text-lg md:text-2xl tracking-tighter text-primary leading-[0.8] uppercase italic">
-                KINGDOM
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                Premium Sivakasi Fireworks
               </span>
-            </div> */}
+            </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${location.pathname === link.to
-                  ? "text-primary font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
-                  }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <nav className="hidden lg:flex items-center rounded-full border border-border/70 bg-card/70 p-1 shadow-sm">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`px-3 xl:px-4 py-2 text-xs font-black uppercase tracking-wider rounded-full transition-all duration-200 ${isActive
+                    ? "bg-primary text-primary-foreground shadow-[0_6px_20px_hsl(var(--primary)/0.38)]"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/75"
+                    }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
-            <Button asChild className="rounded-full gap-1.5">
+          <div className="hidden md:flex items-center gap-2">
+            <Button asChild className="rounded-full h-10 px-5 font-black text-xs uppercase tracking-wider">
               <Link to="/products">
                 Get Price List <ArrowRight size={14} />
               </Link>
             </Button>
           </div>
 
-          <button
-            className="md:hidden p-2 rounded-md hover:bg-secondary transition-colors"
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
-          >
-            {open ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
-
-        {open && (
-          <div className="md:hidden border-t border-border bg-card">
-            <nav className="flex flex-col p-4 gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setOpen(false)}
-                  className={`px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${location.pathname === link.to
-                    ? "text-primary bg-primary/5"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                    }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Button asChild className="mt-2 rounded-full gap-1.5">
-                <Link to="/products" onClick={() => setOpen(false)}>
-                  Get Started <ArrowRight size={14} />
-                </Link>
-              </Button>
-            </nav>
+          <div className="md:hidden absolute left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-[10px] font-black uppercase tracking-[0.14em] text-primary whitespace-nowrap">
+            Minimum Order {"\u20B9"} 3000
           </div>
-        )}
+
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <button
+                type="button"
+                className="lg:hidden h-10 w-10 shrink-0 rounded-full border border-border bg-card/90 hover:bg-secondary/80 transition-colors flex items-center justify-center"
+                aria-label="Open navigation drawer"
+              >
+                <Menu size={20} />
+              </button>
+            </SheetTrigger>
+
+            <SheetContent
+              side="right"
+              className="lg:hidden w-[86vw] max-w-[360px] border-l border-border/70 bg-background/95 p-0 backdrop-blur-xl"
+            >
+              <div className="h-full flex flex-col">
+                <div className="px-5 py-5 border-b border-border/60 bg-linear-to-b from-secondary/40 to-transparent">
+                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-full p-[2px] bg-linear-to-br from-primary via-festive-gold to-primary">
+                      <div className="h-full w-full rounded-full bg-footer/95 ring-1 ring-white/15 overflow-hidden">
+                        <img
+                          src={logo}
+                          alt="Crackers Kingdom"
+                          className="h-full w-full rounded-full object-contain p-1"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-display text-base font-black text-foreground">Crackers Kingdom</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                        Menu
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <nav className="flex-1 px-4 py-4 space-y-2">
+                  {navLinks.map((link) => {
+                    const isActive = location.pathname === link.to;
+                    return (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        onClick={() => setOpen(false)}
+                        className={`block px-4 py-3 rounded-2xl text-sm font-black uppercase tracking-wider transition-colors ${isActive
+                          ? "bg-primary text-primary-foreground shadow-[0_8px_20px_hsl(var(--primary)/0.3)]"
+                          : "bg-secondary/45 text-foreground hover:bg-secondary"
+                          }`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </nav>
+
+                <div className="p-4 border-t border-border/60">
+                  <Button
+                    asChild
+                    className="w-full h-11 rounded-2xl font-black text-xs uppercase tracking-wider"
+                  >
+                    <Link to="/products" onClick={() => setOpen(false)}>
+                      <Sparkles size={15} />
+                      Get Price List
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </header>
     </>
   );

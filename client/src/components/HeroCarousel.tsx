@@ -17,7 +17,7 @@ import sparklers from "@/assets/sparklers.jpg";
 import flowerPots from "@/assets/flower-pots.jpg";
 import chakkars from "@/assets/chakkars.jpg";
 
-const INTERVAL_MS = 3500;
+const INTERVAL_MS = 3000;
 
 interface Slide {
   image: string;
@@ -239,10 +239,11 @@ const HeroCarousel = () => {
             key={i}
             onClick={() => goTo(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 active:scale-95 ${i === current
+            className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 active:scale-95 ${
+              i === current
                 ? "w-5 sm:w-8 bg-primary"
                 : "w-1.5 sm:w-2 bg-card/50 hover:bg-card/80"
-              }`}
+            }`}
           />
         ))}
       </div>

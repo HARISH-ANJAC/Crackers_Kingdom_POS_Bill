@@ -1,4 +1,10 @@
 import { Helmet } from "react-helmet-async";
+import {
+  ADDRESS_LOCALITY,
+  ADDRESS_REGION,
+  ADDRESS_STREET,
+  SHOP_NAME,
+} from "@/lib/businessInfo";
 
 interface SEOProps {
   title?: string;
@@ -17,7 +23,7 @@ const SEO = ({
   ogImage = "/og-image.png",
   twitterHandle = "@CrackersKingdom",
 }: SEOProps) => {
-  const siteName = "Crackers Kingdom";
+  const siteName = SHOP_NAME;
   const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
 
   return (
@@ -57,14 +63,14 @@ const SEO = ({
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Store",
-          "name": "Crackers Kingdom",
+          "name": SHOP_NAME,
           "image": "https://crackerskingdom.in/logo.png",
           "description": "Premium fireworks and crackers shop in Sivakasi.",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "2/190-B5, Naranapuram Road",
-            "addressLocality": "Sivakasi",
-            "postalCode": "629189",
+            "streetAddress": ADDRESS_STREET,
+            "addressLocality": ADDRESS_LOCALITY,
+            "addressRegion": ADDRESS_REGION,
             "addressCountry": "IN"
           },
           "geo": {

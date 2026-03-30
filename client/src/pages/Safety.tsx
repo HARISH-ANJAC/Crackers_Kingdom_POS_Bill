@@ -217,7 +217,7 @@ const Safety = () => (
             <Button asChild size="lg" className="rounded-full gap-2 bg-white text-primary hover:bg-white/90 active:scale-[0.97] transition-transform">
               <Link to="/products">Browse Products</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full border-white/30 text-white hover:bg-white/10 active:scale-[0.97] transition-transform">
+            <Button asChild size="lg" variant="outline" className="rounded-full border-white/90 bg-black/10 text-white hover:bg-black/10 active:scale-[0.97] transition-transform">
               <Link to="/contact">Contact Us</Link>
             </Button>
           </div>
