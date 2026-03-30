@@ -18,6 +18,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import PageHeader from "@/components/PageHeader";
 import SEO from "@/components/SEO";
 import headerBg from "@/assets/header_about_bg.png";
+import { ADDRESS_LINES } from "@/lib/businessInfo";
 
 const milestones = [
   { year: "2025", event: "Founded", desc: "Crackers Kingdom officially launched in Sivakasi, Tamil Nadu, with a mission to bring premium fireworks to every corner of India." },
@@ -100,8 +101,12 @@ const About = () => {
               <div className="flex items-start gap-3">
                 <MapPin size={22} className="text-primary mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-display font-bold">Our Base: Sivakasi, Tamil Nadu</p>
-                  <p className="text-sm text-card/60 mt-1">2/190-B5, Naranapuram Road, Sivakasi – 629189</p>
+                  <p className="font-display font-bold">Our Base Address</p>
+                  <div className="text-sm text-card/60 mt-1 space-y-0.5">
+                    {ADDRESS_LINES.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
                   <p className="text-xs text-card/40 mt-2">The Fireworks Capital of India — where quality crackers are made.</p>
                 </div>
               </div>

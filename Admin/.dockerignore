@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+web-build
+.git
+.env
+android
+ios

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { MapPin, Mail, Phone, Facebook, Linkedin, Twitter } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { ADDRESS_LINES } from "@/lib/businessInfo";
 
 const Footer = () => {
   return (
@@ -10,8 +11,7 @@ const Footer = () => {
           Desktop (lg): 12-column grid
             Brand        → col-span-3  (25%)
             Explore      → col-span-2  (17%)
-            Visit Us     → col-span-2  (17%)
-            Get in Touch → col-span-2  (17%)
+            Reach Us     → col-span-4  (33%)
             Legal Notice → col-span-3  (25%)
 
           Tablet (md): 2-column grid — Brand full-width row, rest auto-grid
@@ -21,8 +21,18 @@ const Footer = () => {
 
           {/* ── Brand ── */}
           <div className="space-y-4 md:col-span-2 lg:col-span-3">
-            <div className="relative rounded-xl bg-white/10 p-1.5 shadow-sm inline-block w-fit mb-1">
-              <img src={logo} alt="Crackers Kingdom" className="h-24 w-32 object-contain" />
+            <div className="relative inline-flex w-fit mb-1">
+              <div className="absolute -inset-2 rounded-full border border-white/10" />
+              <div className="absolute -inset-2 rounded-full border-2 border-transparent border-t-primary border-r-festive-gold animate-spin shadow-[0_0_16px_rgba(247,201,72,0.45)]" />
+              <div className="relative flex h-28 w-28 items-center justify-center rounded-full border border-primary/40 bg-linear-to-br from-card/45 via-card/20 to-card/5 p-2.5 backdrop-blur-sm">
+                <div className="flex h-full w-full items-center justify-center rounded-full bg-footer/80 ring-1 ring-white/10">
+                  <img
+                    src={logo}
+                    alt="Crackers Kingdom"
+                    className="h-[90%] w-[90%] rounded-full object-contain drop-shadow-[0_2px_10px_rgba(247,201,72,0.35)]"
+                  />
+                </div>
+              </div>
             </div>
             <p className="text-sm leading-relaxed opacity-70 max-w-[220px]">
               Premium fireworks sourced directly from Sivakasi — delivered safely across India.
@@ -45,10 +55,10 @@ const Footer = () => {
             <h4 className="font-display font-bold text-card mb-5">Explore</h4>
             <nav className="flex flex-col gap-3">
               {[
-                { label: "Home",        to: "/"        },
-                { label: "Estimate",    to: "/products" },
-                { label: "About Us",    to: "/about"    },
-                { label: "Safety Tips", to: "/safety"   },
+                { label: "Home", to: "/" },
+                { label: "Estimate", to: "/products" },
+                { label: "About Us", to: "/about" },
+                { label: "Safety Tips", to: "/safety" },
               ].map((link) => (
                 <Link
                   key={link.label}
@@ -61,44 +71,46 @@ const Footer = () => {
             </nav>
           </div>
 
-          {/* ── Visit Us ── */}
-          <div className="lg:col-span-2">
-            <h4 className="font-display font-bold text-card mb-5">Visit Us</h4>
-            <div className="flex items-start gap-2 text-sm">
-              <MapPin size={16} className="text-primary mt-0.5 shrink-0" />
-              <span className="leading-relaxed">
-                2/190-B5, Naranapuram Road,<br />
-                Sivakasi – 629189,<br />
-                Tamil Nadu
-              </span>
-            </div>
-          </div>
+          {/* ── Reach Us (Visit & Contact Combined) ── */}
+          <div className="lg:col-span-4 lg:pl-10">
+            <h4 className="font-display font-bold text-card mb-5">Reach Us</h4>
+            <div className="space-y-6">
+              {/* Visit Us */}
+              <div className="flex items-start gap-2 text-sm">
+                <MapPin size={16} className="text-primary mt-0.5 shrink-0" />
+                <p className="leading-relaxed">
+                  {ADDRESS_LINES.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </p>
+              </div>
 
-          {/* ── Get in Touch ── */}
-          <div className="lg:col-span-2">
-            <h4 className="font-display font-bold text-card mb-5">Get in Touch</h4>
-            <div className="space-y-4">
-              {/* Email — break-words so it wraps at the @ if needed, no mid-character breaking */}
-              <a
-                href="mailto:crackerskingdom26@gmail.com"
-                className="flex items-start gap-2 text-sm hover:text-primary transition-colors group"
-              >
-                <Mail size={15} className="text-primary shrink-0 mt-0.5" />
-                <span className="wrap-break-word leading-snug">
-                  crackerskingdom26
-                  <wbr />
-                  @gmail.com
-                </span>
-              </a>
+              {/* Get in Touch */}
+              <div className="space-y-4">
+                <a
+                  href="mailto:crackerskingdom26@gmail.com"
+                  className="flex items-start gap-2 text-sm hover:text-primary transition-colors group"
+                >
+                  <Mail size={15} className="text-primary shrink-0 mt-0.5" />
+                  <p className="wrap-break-word leading-snug">
+                    crackerskingdom26@gmail.com
+                  </p>
+                </a>
 
-              {/* Phone */}
-              <a
-                href="tel:+918144271571"
-                className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
-              >
-                <Phone size={15} className="text-festive-green shrink-0" />
-                <span>+91 81442 71571</span>
-              </a>
+                <a
+                  href="tel:+918144271571"
+                  className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
+                >
+                  <Phone size={15} className="text-festive-green shrink-0" />
+                  <span>+91 81442 71571</span>
+                </a>
+              </div>
+
+              <p className="text-xs font-bold text-card">
+                GST IN :30239HHJ343HG393
+              </p>
             </div>
           </div>
 
@@ -106,19 +118,18 @@ const Footer = () => {
           <div className="md:col-span-2 lg:col-span-3">
             <h4 className="font-display font-bold text-primary mb-5">Legal Notice</h4>
             <div className="bg-card/5 border border-card/10 rounded-xl p-4">
-              <p className="text-xs leading-relaxed text-footer-foreground/75 font-medium italic">
-                <span className="text-primary font-bold not-italic underline underline-offset-4 mb-2 inline-block">
-                  Supreme Court Order (2018):
+              <p className="text-xs leading-relaxed text-footer-foreground/75 font-medium italic text-justify indent-4">
+                Online sale of firecrackers is not allowed. You can view and select the products on
+                our website only to get a price estimate. After selecting the items, please click
+                the <span className="text-card font-bold">"Get Estimate"</span> button and submit
+                your request. Our team will contact you within 2 hours to confirm your order
+                details. <span className="text-card font-bold">Crackers Kingdom</span> follows all
+                legal rules and regulations under License:{" "}
+                <span className="text-card font-bold">
+                  M/S NANDHINI TRADERS, SURVEY NO: 299/13A1C, 299/15A2
                 </span>
-                <br />
-                Online sale of firecrackers is not permitted. Customers are requested to select
-                products for estimation and submit via the{" "}
-                <span className="text-card font-bold">Get Estimate</span> button. We will contact
-                you within 2 hrs to confirm. Our shop{" "}
-                <span className="text-card font-bold">Crackers Kingdom</span> follows 100% legal
-                compliances under License:{" "}
-                <span className="text-card font-bold">RSK AGENCIES (No: X/20XX)</span>. We send
-                parcels through registered legal transport services as per Sivakasi standards.
+                . We send parcels only through legally approved and registered transport services, as
+                per the standard guidelines followed in Sivakasi.
               </p>
             </div>
           </div>
@@ -130,7 +141,7 @@ const Footer = () => {
       <div className="border-t border-card/10">
         <div className="max-w-[1400px] mx-auto section-padding py-5 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs opacity-60">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Crackers Kingdom" className="h-5 w-5 grayscale opacity-50" />
+            <img src={logo} alt="Crackers Kingdom" className="h-8 w-8 rounded-full" />
             <span>
               Copyright © 2026 <strong>Crackers Kingdom</strong>. All rights reserved.
             </span>
