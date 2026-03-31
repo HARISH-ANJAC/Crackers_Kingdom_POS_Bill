@@ -70,6 +70,29 @@ const howItWorks = [
   },
 ];
 
+const contactStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact Crackers Kingdom",
+  description:
+    "Contact Crackers Kingdom for estimate support, bulk order enquiries, and parcel dispatch assistance. Based in Sivakasi, serving customers across India.",
+  url: "https://crackerskingdom.in/contact",
+  inLanguage: "en-IN",
+  mainEntity: {
+    "@type": "Organization",
+    name: "Crackers Kingdom",
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: "+91 81442 71571",
+        contactType: "customer support",
+        areaServed: "IN",
+        availableLanguage: ["English", "Tamil"],
+      },
+    ],
+  },
+};
+
 const Contact = () => {
   const [form, setForm] = useState({ name: "", phone: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -118,8 +141,12 @@ const Contact = () => {
   return (
     <div>
       <SEO
-        title="Contact Us | Crackers Kingdom — Enquiries & Bulk Orders"
-        description="Get in touch with Crackers Kingdom for fireworks estimates, bulk order enquiries, or any support. Based in Sivakasi — serving customers across India. Response guaranteed within 2 hours."
+        title="Contact Crackers Kingdom | Fireworks Enquiry and Bulk Orders"
+        description="Contact Crackers Kingdom for estimate support, bulk order enquiries, and parcel dispatch assistance. Based in Sivakasi, serving customers across India."
+        canonical="/contact"
+        keywords="contact crackers kingdom, fireworks enquiry, bulk crackers order, sivakasi fireworks contact"
+        ogImage="/og/contact-og.svg?v=2"
+        structuredData={contactStructuredData}
       />
       <PageHeader
         title="Get in Touch"
@@ -342,3 +369,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

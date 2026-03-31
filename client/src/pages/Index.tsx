@@ -69,7 +69,12 @@ const whyUs = [
   {
     icon: BadgeCheck,
     title: "Licensed & Certified",
-    desc: "We operate under a valid government license (RSK Agencies, No: X/20XX) with 100% compliance to legal standards.",
+    desc: (
+      <>
+        Every product we sell complies with government safety standards. We operate under a valid license -
+        <strong className="text-foreground"> M/S NANDHINI TRADERS, Survey No: 299/13A1C, 299/15A2 </strong> - and strictly follow all Supreme Court guidelines on firework sales.
+      </>
+    ),
     color: "bg-primary/10 text-primary",
   },
   {
@@ -116,7 +121,7 @@ const howItWorks = [
     step: "02",
     icon: Send,
     title: "Submit Request",
-    desc: "Click 'Proceed to Checkout'. We will receive your estimate with item details and your contact info.",
+    desc: "Click 'Place Enquiry'. We will receive your estimate with item details and your contact info.",
   },
   {
     step: "03",
@@ -132,12 +137,31 @@ const howItWorks = [
   },
 ];
 
+const indexStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Premium Sivakasi Fireworks Estimate Online",
+  description:
+    "Explore premium Sivakasi fireworks, compare categories, and submit your estimate online. Legal parcel dispatch across India with a fast 2-hour response.",
+  url: "https://crackerskingdom.in/",
+  inLanguage: "en-IN",
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Crackers Kingdom",
+    url: "https://crackerskingdom.in",
+  },
+};
+
 const Index = () => {
   return (
     <div className="bg-background">
       <SEO
-        title="Crackers Kingdom | Premium Sivakasi Fireworks — Nationwide"
-        description="Crackers Kingdom is your ultimate nationwide destination for premium Sivakasi fireworks. Exclusive Diwali offers, safe certified crackers, and convenient pan-India parcel delivery. Get your estimate today!"
+        title="Premium Sivakasi Fireworks Estimate Online"
+        description="Explore premium Sivakasi fireworks, compare categories, and submit your estimate online. Legal parcel dispatch across India with a fast 2-hour response."
+        canonical="/"
+        keywords="Sivakasi fireworks, crackers estimate online, Diwali crackers, fireworks delivery India, Crackers Kingdom"
+        ogImage="/og/index-og.svg?v=2"
+        structuredData={indexStructuredData}
       />
       <HeroCarousel />
 
@@ -148,39 +172,60 @@ const Index = () => {
       </div>
 
       {/* ── About Preview ── */}
-      <section className="py-20 section-padding bg-linear-to-b from-foreground/5 via-secondary/60 to-background">
+      <section className="py-5 section-padding bg-linear-to-b from-foreground/5 via-secondary/60 to-background">
         <div className="container-narrow grid lg:grid-cols-2 gap-12 items-center">
           <ScrollReveal direction="left">
-            {/* ✨ → Sparkles */}
             <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
-              <Sparkles size={13} /> Est. 2025 — Sivakasi
+              <Sparkles size={13} /> Premium Sivakasi Fireworks
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mt-2 leading-tight text-balance">
-              Your Nationwide<br />
-              <span className="text-primary">Fireworks Destination</span>
+
+            <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold mt-2 leading-tight text-balance">
+              Premium <span className="text-primary">Sivakasi Crackers</span> for Celebrations Across India
             </h2>
-            <p className="text-muted-foreground mt-4 leading-relaxed text-sm">
-              Welcome to Crackers Kingdom — established just last year, yet already making celebrations brighter across India. Based in the fireworks capital of the world, Sivakasi, we are committed to bringing fresh excitement and unparalleled joy to your festivities with a diverse collection ranging from classic sparklers to breathtaking aerial displays.
+
+            <p className="text-muted-foreground mt-4 text-justify indent-4 leading-relaxed text-sm">
+              Welcome to <strong className="text-primary">Crackers Kingdom</strong>, your trusted destination for
+              authentic Sivakasi firecrackers. Located in Sivakasi — the heart of
+              India’s fireworks industry — we bring you a wide range of premium
+              crackers including sparklers, rockets, flower pots, sky shots,
+              chakkars, kids’ crackers, and festive gift boxes. Every product is
+              carefully selected to deliver excitement, safety, and brilliant
+              celebration moments.
             </p>
-            <p className="text-muted-foreground mt-3 leading-relaxed text-sm">
-              While direct doorstep delivery of firecrackers is restricted as per Supreme Court orders, we expertly organize secure transport through reliable registered parcel services — so your fireworks reach you conveniently and legally.
+
+            <p className="text-muted-foreground mt-3 leading-relaxed text-justify indent-4 text-sm">
+              At Crackers Kingdom, we focus on transparent pricing, reliable service,
+              and quality-tested fireworks so you can confidently plan your
+              celebrations. Whether it’s Diwali, weddings, temple festivals,
+              birthdays, or corporate events, our estimate system helps you select
+              the perfect crackers while staying within your budget.
             </p>
+
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2">
                 <ShieldCheck size={18} className="text-primary" />
-                <span className="text-sm font-medium">100% Licensed & Legal</span>
+                <span className="text-sm font-medium">Authentic Sivakasi Crackers</span>
               </div>
+
               <div className="flex items-center gap-2">
                 <Award size={18} className="text-festive-gold" />
-                <span className="text-sm font-medium">Quality Tested Products</span>
+                <span className="text-sm font-medium">Quality & Safety Tested</span>
               </div>
+
               <div className="flex items-center gap-2">
                 <Truck size={18} className="text-festive-green" />
-                <span className="text-sm font-medium">Pan-India Parcel Service</span>
+                <span className="text-sm font-medium">Secure Parcel Delivery Across India</span>
               </div>
             </div>
-            <Button asChild className="mt-6 rounded-full gap-2 active:scale-[0.97] transition-transform" variant="outline">
-              <Link to="/about">Know More About Us <ArrowRight size={14} /></Link>
+
+            <Button
+              asChild
+              className="mt-6 rounded-full gap-2 active:scale-[0.97] transition-transform"
+              variant="outline"
+            >
+              <Link to="/about">
+                Discover Crackers Kingdom <ArrowRight size={14} />
+              </Link>
             </Button>
           </ScrollReveal>
 
@@ -201,49 +246,55 @@ const Index = () => {
                   </div>
                 </div>
               </div>
+
               <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <div className="w-10 h-10 rounded-lg bg-festive-gold/10 flex items-center justify-center mb-3">
                   <Sparkles size={20} className="text-festive-gold" />
                 </div>
-                <p className="text-2xl font-display font-bold text-primary">40%</p>
-                <p className="text-xs text-muted-foreground mt-1">Off on Bulk Orders This Season</p>
+                <p className="text-2xl font-display font-bold text-primary">250+</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Happy Customers Every Year
+                </p>
               </div>
+
               <div className="bg-card rounded-2xl p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
                   <Phone size={20} className="text-primary" />
                 </div>
-                <p className="text-2xl font-display font-bold">2 Hrs</p>
-                <p className="text-xs text-muted-foreground mt-1">Response guarantee after estimate</p>
+                <p className="text-2xl font-display font-bold">Fast</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Quick Response for Estimate Requests
+                </p>
               </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* ── Why Choose Us ── */}
-      <section className="py-20 section-padding bg-background">
+      {/* Why Choose Us */}
+      <section className="py-20 section-padding bg-secondary/50">
         <div className="container-narrow">
           <ScrollReveal className="text-center mb-12">
-            {/* 🏆 → Trophy */}
-            <span className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-widest">
-              <Trophy size={13} /> Why Us
-            </span>
+            <div className="inline-flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-widest">
+              <Trophy className="w-3.5 h-3.5" />
+              Why Choose Us
+            </div>
             <h2 className="font-display text-3xl md:text-4xl font-bold mt-2">
               Why Choose <span className="text-primary">Crackers Kingdom?</span>
             </h2>
             <p className="text-muted-foreground text-sm mt-3 max-w-md mx-auto">
-              We are committed to quality, safety, and making your festive celebrations unforgettable — every single time.
+              We are committed to quality, safety, and making your festive celebrations unforgettable - every single time.
             </p>
           </ScrollReveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {whyUs.map((w, i) => (
               <ScrollReveal key={w.title} delay={i * 0.08}>
-                <div className="bg-card rounded-2xl p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
+                <div className="bg-card rounded-2xl p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full border border-border/60">
                   <div className={`w-12 h-12 rounded-xl ${w.color} flex items-center justify-center mb-4`}>
                     <w.icon size={22} />
                   </div>
                   <h3 className="font-display font-bold text-lg mb-2">{w.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{w.desc}</p>
+                  <p className="text-sm text-muted-foreground text-justify indent-4 leading-relaxed">{w.desc}</p>
                 </div>
               </ScrollReveal>
             ))}
@@ -429,7 +480,7 @@ const Index = () => {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mt-2 text-balance">
               Don't Miss Our Exclusive Festive Offers!
             </h2>
-            <p className="text-primary-foreground/80 mt-4 max-w-xl mx-auto text-sm leading-relaxed">
+            <p className="text-primary-foreground/80 text-justify mt-4 max-w-xl mx-auto text-sm leading-relaxed">
               Get up to 40% off on bulk orders this season. Browse our complete collection, build your estimate, and our team will reach out within 2 hours to confirm. Let Crackers Kingdom make your celebration unforgettable!
             </p>
             <div className="flex flex-wrap gap-4 justify-center mt-8">
@@ -448,3 +499,4 @@ const Index = () => {
 };
 
 export default Index;
+

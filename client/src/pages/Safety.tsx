@@ -22,133 +22,191 @@ import headerBg from "@/assets/header_safety_bg.png";
 const tips = [
   {
     icon: ShieldCheck,
-    title: "Buy Only Certified Products",
-    desc: "Always purchase fireworks from a licensed and authorized dealer like Crackers Kingdom. Check for ISI mark, government certification, and ensure the seller holds a valid license.",
+    title: "Buy Only Licensed Crackers",
+    desc: "Always purchase fireworks from licensed sellers. Crackers Kingdom operates under M/S NANDHINI TRADERS and supplies certified Sivakasi crackers manufactured according to government safety standards.",
     color: "bg-primary/10 text-primary",
   },
   {
     icon: AlertTriangle,
     title: "Maintain Safe Distance",
-    desc: "Keep a safe distance of at least 5 meters from lit fireworks. Never lean over a firework to inspect it after lighting — even if it appears to be a dud. Wait at least 15 minutes.",
+    desc: "Keep at least 5 meters distance from lit fireworks. Never lean over a firework to inspect it after lighting, even if it seems not to ignite.",
     color: "bg-festive-ruby/10 text-festive-ruby",
   },
   {
     icon: Baby,
-    title: "Strict Adult Supervision",
-    desc: "Children should ONLY use fireworks under strict adult supervision. Sparklers — though seemingly harmless — burn at over 1000°C. Children under 12 should never handle any crackers.",
+    title: "Adult Supervision for Children",
+    desc: "Children should use crackers only under strict adult supervision. Even sparklers burn at extremely high temperatures and must be handled carefully.",
     color: "bg-festive-gold/10 text-festive-gold",
   },
   {
     icon: Droplets,
-    title: "Keep Water & Fire Aid Ready",
-    desc: "Always keep a bucket of water, a hose, or a dry chemical fire extinguisher nearby. Fully douse used fireworks in water before disposal to prevent accidental re-ignition.",
+    title: "Keep Water Nearby",
+    desc: "Always keep a bucket of water, sand, or fire extinguisher ready while bursting crackers. Used fireworks should be soaked in water before disposal.",
     color: "bg-festive-sapphire/10 text-festive-sapphire",
   },
   {
     icon: Wind,
-    title: "Open Spaces Only",
-    desc: "Light fireworks outdoors only — in large, open areas away from buildings, vehicles, overhead cables, and dry vegetation. Check wind direction so sparks blow away from people.",
+    title: "Use Open Areas",
+    desc: "Burst crackers only in open spaces away from buildings, vehicles, dry grass, and electrical wires. Ensure sparks blow away from people.",
     color: "bg-festive-green/10 text-festive-green",
   },
   {
     icon: Eye,
-    title: "Wear Protective Clothing",
-    desc: "Wear close-fitting cotton clothing (not synthetic). Protect your eyes; avoid looking directly into aerial bursts. Keep a safe standback distance based on the firework size.",
+    title: "Wear Proper Clothing",
+    desc: "Wear cotton clothing while handling fireworks. Avoid synthetic fabrics and protect your eyes while lighting aerial fireworks.",
     color: "bg-primary/10 text-primary",
   },
   {
     icon: Flame,
-    title: "Light One at a Time",
-    desc: "Light fireworks one at a time and immediately move back to a safe distance. Never try to light multiple fireworks simultaneously or re-light a failed one with your hand.",
+    title: "Light One Firework at a Time",
+    desc: "Always light fireworks individually and move back immediately. Never try lighting multiple crackers at once.",
     color: "bg-festive-ruby/10 text-festive-ruby",
   },
   {
     icon: BicepsFlexed,
-    title: "Proper Handling & Storage",
-    desc: "Store fireworks in a cool, dry place away from heat sources, sunlight, and open flames. Never carry fireworks in pockets or near your body. Keep them in their original packaging.",
+    title: "Proper Storage",
+    desc: "Store crackers in a cool and dry place away from sunlight, heat, and flames. Keep them sealed in their original packaging until use.",
     color: "bg-festive-gold/10 text-festive-gold",
   },
   {
     icon: Phone,
-    title: "Know Emergency Numbers",
-    desc: "Keep emergency contacts handy: Fire Dept (101), Ambulance (108), Police (100). In case of burns, immediately cool the area with running water for at least 10 minutes before seeking medical help.",
+    title: "Know Emergency Contacts",
+    desc: "Keep emergency numbers handy: Fire Service (101), Ambulance (108), Police (100). For burns, cool the affected area with water immediately.",
     color: "bg-accent/10 text-accent",
   },
 ];
 
 const doNots = [
-  "Never light fireworks indoors or in enclosed spaces.",
-  "Never point or throw fireworks at another person.",
-  "Never carry lit fireworks in your hand.",
-  "Never use fireworks under the influence of alcohol.",
-  "Never alter or tamper with fireworks packaging or fuses.",
-  "Never dispose of fireworks in recycling or regular waste bins without dousing them first.",
+  "Never light fireworks indoors or inside enclosed areas.",
+  "Never throw or point fireworks at people or animals.",
+  "Never hold a lit firework in your hand.",
+  "Never burst crackers under the influence of alcohol.",
+  "Never tamper with fireworks or modify the fuse.",
+  "Never dispose of fireworks without soaking them in water first.",
 ];
+
+const safetyStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Fireworks Safety Tips and Guidelines",
+  description:
+    "Read essential fireworks safety tips from Crackers Kingdom. Follow safe handling guidelines for Diwali and all festive celebrations.",
+  url: "https://crackerskingdom.in/safety",
+  inLanguage: "en-IN",
+};
 
 const Safety = () => (
   <div>
     <SEO
-      title="Fireworks Safety Tips | Celebrate Safely — Crackers Kingdom"
-      description="Your safety is our top priority. Read our comprehensive guidelines for using firecrackers safely during Diwali and every celebration. Stay safe, stay happy with Crackers Kingdom."
+      title="Fireworks Safety Tips and Guidelines"
+      description="Read essential fireworks safety tips from Crackers Kingdom. Follow safe handling guidelines for Diwali and all festive celebrations."
+      canonical="/safety"
+      keywords="fireworks safety tips, diwali safety guide, safe crackers usage, fireworks precautions"
+      ogImage="/og/safety-og.svg?v=2"
+      structuredData={safetyStructuredData}
     />
+
     <PageHeader
       title="Safety Tips"
-      subtitle="Your safety is our top priority. Celebrate with joy and responsibility."
+      subtitle="Celebrate responsibly with proper firework safety practices."
       bgImage={headerBg}
     />
 
     {/* Intro */}
     <section className="py-16 section-padding">
       <div className="container-narrow grid lg:grid-cols-3 gap-8 items-start">
+
         <ScrollReveal className="lg:col-span-2" direction="left">
-          <span className="text-primary text-xs font-semibold uppercase tracking-widest">🛡️ Safety First</span>
+          <span className="text-primary text-xs font-semibold uppercase tracking-widest flex items-center gap-1.5">
+            <ShieldCheck size={14} />
+            Safety First
+          </span>
+
           <h2 className="font-display text-3xl font-bold mt-2 text-balance">
-            Celebrate Brightly,<br />
+            Celebrate Brightly
+            <br />
             <span className="text-primary">Celebrate Safely</span>
           </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed mt-4">
-            At Crackers Kingdom, we believe that the best celebrations are the safest ones. Fireworks are a beautiful part of our festive traditions — and with the right precautions, they can be enjoyed joyfully by the entire family.
+
+          <p className="text-muted-foreground text-sm text-justify indent-4 leading-relaxed mt-4">
+            At <strong>Crackers Kingdom</strong>, we believe celebrations should be joyful and safe.
+            Fireworks add excitement to festivals like Diwali, weddings, and temple celebrations,
+            but they must always be used responsibly.
           </p>
-          <p className="text-muted-foreground text-sm leading-relaxed mt-3">
-            All products available through Crackers Kingdom are sourced from licensed Sivakasi manufacturers and comply with government safety regulations. Here are our essential safety guidelines to ensure your festive season is filled with light, not worry.
+
+          <p className="text-muted-foreground text-justify indent-4 text-sm leading-relaxed mt-3">
+            Our crackers are sourced from licensed Sivakasi manufacturers and supplied under the
+            registered license <strong>M/S NANDHINI TRADERS, Survey No: 299/13A1C, 299/15A2</strong>.
+            Please follow the safety guidelines below to ensure a safe celebration for you and your family.
           </p>
         </ScrollReveal>
+
         <ScrollReveal direction="right">
           <div className="bg-foreground text-card rounded-2xl p-6 space-y-4">
+
             <div className="flex items-center gap-3">
               <CircleAlert size={22} className="text-festive-ruby shrink-0" />
               <h3 className="font-display font-bold">Legal Reminder</h3>
             </div>
-            <p className="text-sm text-card/70 leading-relaxed">
-              As per the <strong className="text-primary">Supreme Court Order (2018)</strong>, online direct sale of firecrackers is not permitted. All orders through Crackers Kingdom are processed via our estimate system, confirmed by our team, and dispatched via registered legal transport services.
+
+            <p className="text-sm text-card/70 text-justify indent-4 leading-relaxed">
+              As per the <strong className="text-primary">Supreme Court Order (2018)</strong>,
+              online sale of firecrackers is not permitted. Customers may browse products and
+              submit an estimate request through our website. Orders are confirmed by our team
+              and dispatched through registered parcel transport services.
             </p>
-            <Button asChild size="sm" className="rounded-full gap-1.5 w-full" variant="outline">
+
+            <Button
+              asChild
+              size="sm"
+              className="rounded-full bg-primary gap-1.5 w-full"
+              variant="outline"
+            >
               <Link to="/about">Learn More About Our Process</Link>
             </Button>
+
           </div>
         </ScrollReveal>
+
       </div>
     </section>
 
     {/* Tips Grid */}
     <section className="py-8 pb-20 section-padding bg-secondary/50">
       <div className="container-narrow">
+
         <ScrollReveal className="text-center mb-12">
-          <span className="text-primary text-xs font-semibold uppercase tracking-widest">📋 Safety Guidelines</span>
-          <h2 className="font-display text-3xl font-bold mt-2">Essential Safety Rules</h2>
+          <span className="text-primary text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-1.5">
+            <BookOpen size={14} />
+            Safety Guidelines
+          </span>
+
+          <h2 className="font-display text-3xl font-bold mt-2">
+            Essential Safety Rules
+          </h2>
+
           <p className="text-muted-foreground text-sm mt-3 max-w-md mx-auto">
-            Follow these guidelines for a happy, safe, and responsible celebration with your loved ones.
+            Follow these precautions to ensure a safe and responsible fireworks celebration.
           </p>
         </ScrollReveal>
+
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tips.map((t, i) => (
             <ScrollReveal key={t.title} delay={i * 0.06}>
               <div className="bg-card rounded-2xl p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
+
                 <div className={`w-12 h-12 rounded-xl ${t.color} flex items-center justify-center mb-4`}>
                   <t.icon size={22} />
                 </div>
-                <h3 className="font-display font-bold text-lg mb-2">{t.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{t.desc}</p>
+
+                <h3 className="font-display font-bold text-lg mb-2">
+                  {t.title}
+                </h3>
+
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t.desc}
+                </p>
+
               </div>
             </ScrollReveal>
           ))}
@@ -159,69 +217,134 @@ const Safety = () => (
     {/* Do Nots */}
     <section className="py-20 section-padding">
       <div className="container-narrow grid lg:grid-cols-2 gap-12 items-start">
+
         <ScrollReveal direction="left">
+
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-festive-ruby/10 flex items-center justify-center">
               <AlertTriangle size={22} className="text-festive-ruby" />
             </div>
-            <h2 className="font-display text-2xl font-bold">What NOT to Do</h2>
+
+            <h2 className="font-display text-2xl font-bold">
+              What NOT to Do
+            </h2>
           </div>
+
           <div className="space-y-3">
             {doNots.map((item, i) => (
-              <div key={i} className="flex items-start gap-3 bg-festive-ruby/5 border border-festive-ruby/10 rounded-xl p-4">
-                <AlertTriangle size={16} className="text-festive-ruby mt-0.5 shrink-0" />
-                <p className="text-sm text-muted-foreground leading-relaxed">{item}</p>
+              <div
+                key={i}
+                className="flex items-start gap-3 bg-festive-ruby/5 border border-festive-ruby/10 rounded-xl p-4"
+              >
+                <AlertTriangle
+                  size={16}
+                  className="text-festive-ruby mt-0.5 shrink-0"
+                />
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {item}
+                </p>
               </div>
             ))}
           </div>
+
         </ScrollReveal>
+
         <ScrollReveal direction="right">
+
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-festive-green/10 flex items-center justify-center">
               <ThumbsUp size={22} className="text-festive-green" />
             </div>
-            <h2 className="font-display text-2xl font-bold">Best Practices</h2>
+
+            <h2 className="font-display text-2xl font-bold">
+              Best Practices
+            </h2>
           </div>
+
           <div className="space-y-4">
             {[
-              { title: "Read Instructions", desc: "Always read the instructions on the firework packaging before lighting. Different fireworks have different safety requirements." },
-              { title: "Supervise Children Always", desc: "Even older children (12+) with sparklers must have an adult present at all times. Never leave them unattended with any fireworks." },
-              { title: "Inform Neighbors", desc: "Let your neighbors know before you start — especially if they have pets, elderly people, or infants who may be sensitive to loud sounds." },
-              { title: "Check Local Timings", desc: "Follow local authority guidelines on allowed timings for bursting crackers. Avoid late-night bursting to respect community quiet hours." },
-              { title: "Safe Disposal", desc: "After celebrations, sweep up all debris. Soak spent fireworks in water overnight and dispose of them in designated waste bins, not in drains." },
+              {
+                title: "Read Instructions",
+                desc: "Always read the instructions printed on firework packaging before lighting.",
+              },
+              {
+                title: "Supervise Children",
+                desc: "Children must always be supervised by adults while handling sparklers or crackers.",
+              },
+              {
+                title: "Inform Neighbors",
+                desc: "Let neighbors know before bursting crackers, especially if they have pets or elderly family members.",
+              },
+              {
+                title: "Follow Local Timing Rules",
+                desc: "Respect local government timing regulations for bursting crackers.",
+              },
+              {
+                title: "Dispose Safely",
+                desc: "After use, soak spent fireworks in water before disposing them in waste bins.",
+              },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3 bg-festive-green/5 border border-festive-green/10 rounded-xl p-4">
-                <BookOpen size={16} className="text-festive-green mt-0.5 shrink-0" />
+              <div
+                key={i}
+                className="flex items-start gap-3 bg-festive-green/5 border border-festive-green/10 rounded-xl p-4"
+              >
+                <BookOpen
+                  size={16}
+                  className="text-festive-green mt-0.5 shrink-0"
+                />
                 <div>
                   <p className="text-sm font-semibold mb-0.5">{item.title}</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
+
         </ScrollReveal>
+
       </div>
     </section>
 
     {/* CTA */}
     <section className="py-16 section-padding bg-primary">
       <div className="container-narrow text-center">
+
         <ScrollReveal>
+
           <h2 className="font-display text-3xl font-bold text-primary-foreground">
             Ready to Celebrate Safely?
           </h2>
+
           <p className="text-primary-foreground/80 mt-3 max-w-lg mx-auto text-sm">
-            Browse our full collection of certified, safe, and high-quality fireworks. Place your estimate today and our team will reach you within 2 hours!
+            Explore our wide range of quality Sivakasi crackers and place your estimate request.
+            Our team will contact you shortly to confirm the order.
           </p>
+
           <div className="flex gap-4 flex-wrap justify-center mt-8">
-            <Button asChild size="lg" className="rounded-full gap-2 bg-white text-primary hover:bg-white/90 active:scale-[0.97] transition-transform">
+
+            <Button
+              asChild
+              size="lg"
+              className="rounded-full gap-2 bg-white text-primary hover:bg-white/90 active:scale-[0.97] transition-transform"
+            >
               <Link to="/products">Browse Products</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full border-white/90 bg-black/10 text-white hover:bg-black/10 active:scale-[0.97] transition-transform">
+
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="rounded-full border-white/90 bg-black/10 text-white hover:bg-black/10 active:scale-[0.97] transition-transform"
+            >
               <Link to="/contact">Contact Us</Link>
             </Button>
+
           </div>
+
         </ScrollReveal>
+
       </div>
     </section>
   </div>

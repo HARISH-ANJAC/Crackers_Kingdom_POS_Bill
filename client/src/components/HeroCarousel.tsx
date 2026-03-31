@@ -137,7 +137,7 @@ const HeroCarousel = () => {
             className="w-full h-full object-cover"
           />
           {/* Gradient — stronger on mobile so text stays legible on smaller area */}
-          <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/60 to-foreground/10 sm:from-foreground/80 sm:via-foreground/50 sm:to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-foreground/90 via-foreground/60 to-foreground/10 sm:from-foreground/80 sm:via-foreground/50 sm:to-transparent" />
         </motion.div>
       </AnimatePresence>
 
@@ -239,11 +239,10 @@ const HeroCarousel = () => {
             key={i}
             onClick={() => goTo(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 active:scale-95 ${
-              i === current
+            className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 active:scale-95 ${i === current
                 ? "w-5 sm:w-8 bg-primary"
                 : "w-1.5 sm:w-2 bg-card/50 hover:bg-card/80"
-            }`}
+              }`}
           />
         ))}
       </div>

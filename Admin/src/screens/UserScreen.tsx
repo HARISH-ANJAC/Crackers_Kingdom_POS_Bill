@@ -474,47 +474,58 @@ const UserScreen = ({ navigation }: { navigation?: any }) => {
                 <View className="p-4 md:p-6">
                     <View className={clsx(
                         "gap-4 md:gap-6",
+                        // On web, keep horizontal layout; on mobile/tablet, stack vertically
                         isWeb ? "flex-row items-center justify-between" : "flex-col"
                     )}>
-                        <View className={clsx("flex-1", !isWeb && "w-full")}>
-                            <View className="relative">
-                                <View className="absolute left-4 top-0 bottom-0 justify-center z-10">
-                                    <Search
-                                        size={20}
-                                        color={searchQuery ? COLORS.primary : "#9CA3AF"}
-                                    />
-                                </View>
-                                <TextInput
-                                    placeholder="Search users by name or email..."
-                                    className={clsx(
-                                        "w-full bg-white border-2 rounded-xl text-gray-800",
-                                        "focus:border-primary transition-all duration-200",
-                                        "border-gray-300/80",
-                                        Platform.OS === 'android' ? "pl-12 pr-10 py-4" : "pl-12 pr-10 py-3"
-                                    )}
-                                    style={{
-                                        textAlignVertical: 'center',
-                                        includeFontPadding: false,
-                                    }}
-                                    placeholderTextColor="#9CA3AF"
-                                    value={searchQuery}
-                                    onChangeText={setSearchQuery}
+                        {/* Search Input - Takes remaining space on web, full width on mobile */}
+                        <View className={clsx(
+                            "relative",
+                            isWeb ? "flex-1" : "w-full"
+                        )}>
+                            <View className="absolute left-4 top-0 bottom-0 justify-center z-10">
+                                <Search
+                                    size={20}
+                                    color={searchQuery ? COLORS.primary : "#9CA3AF"}
                                 />
-                                {searchQuery && (
-                                    <TouchableOpacity
-                                        onPress={() => setSearchQuery('')}
-                                        className="absolute right-4 top-0 bottom-0 justify-center z-10"
-                                        activeOpacity={0.7}
-                                    >
-                                        <View className="bg-gray-200/80 rounded-full p-1">
-                                            <X size={12} color="#4B5563" />
-                                        </View>
-                                    </TouchableOpacity>
-                                )}
                             </View>
+                            <TextInput
+                                placeholder="Search users by name or email..."
+                                className={clsx(
+                                    "w-full bg-white border-2 rounded-xl text-gray-800",
+                                    "focus:border-primary transition-all duration-200",
+                                    "border-gray-300/80",
+                                    // Adjust padding based on platform for better alignment
+                                    Platform.OS === 'android'
+                                        ? "pl-12 pr-12 py-4"
+                                        : "pl-12 pr-12 py-3"
+                                )}
+                                style={{
+                                    textAlignVertical: 'center',
+                                    includeFontPadding: false,
+                                }}
+                                placeholderTextColor="#9CA3AF"
+                                value={searchQuery}
+                                onChangeText={setSearchQuery}
+                            />
+                            {searchQuery && (
+                                <TouchableOpacity
+                                    onPress={() => setSearchQuery('')}
+                                    className="absolute right-4 top-0 bottom-0 justify-center z-10"
+                                    activeOpacity={0.7}
+                                >
+                                    <View className="bg-gray-200/80 rounded-full p-1">
+                                        <X size={12} color="#4B5563" />
+                                    </View>
+                                </TouchableOpacity>
+                            )}
                         </View>
 
-                        <View className={clsx(isWeb ? "w-[240px]" : "w-full")}>
+                        {/* Status Filter Dropdown */}
+                        <View className={clsx(
+                            isWeb ? "w-[240px]" : "w-full",
+                            // Add margin top on mobile for better spacing
+                            !isWeb && "mt-2"
+                        )}>
                             <CustomDropDown
                                 placeholder="Filter by status"
                                 items={[

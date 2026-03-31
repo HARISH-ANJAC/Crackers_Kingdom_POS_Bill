@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, Mail, Phone, Facebook, Linkedin, Twitter } from "lucide-react";
+import { Facebook, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { ADDRESS_LINES } from "@/lib/businessInfo";
 
@@ -7,36 +7,32 @@ const Footer = () => {
   return (
     <footer className="bg-footer text-footer-foreground">
       <div className="max-w-[1400px] mx-auto section-padding py-10">
-        {/*
-          Desktop (lg): 12-column grid
-            Brand        → col-span-3  (25%)
-            Explore      → col-span-2  (17%)
-            Reach Us     → col-span-4  (33%)
-            Legal Notice → col-span-3  (25%)
-
-          Tablet (md): 2-column grid — Brand full-width row, rest auto-grid
-          Mobile: single column
-        */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6">
-
-          {/* ── Brand ── */}
+          {/* Brand */}
           <div className="space-y-4 md:col-span-2 lg:col-span-3">
             <div className="relative inline-flex w-fit mb-1">
-              <div className="absolute -inset-2 rounded-full border border-white/10" />
-              <div className="absolute -inset-2 rounded-full border-2 border-transparent border-t-primary border-r-festive-gold animate-spin shadow-[0_0_16px_rgba(247,201,72,0.45)]" />
-              <div className="relative flex h-28 w-28 items-center justify-center rounded-full border border-primary/40 bg-linear-to-br from-card/45 via-card/20 to-card/5 p-2.5 backdrop-blur-sm">
-                <div className="flex h-full w-full items-center justify-center rounded-full bg-footer/80 ring-1 ring-white/10">
+              <div className="relative h-28 w-28 rounded-full p-[2px] overflow-visible bg-linear-to-br from-primary via-festive-gold to-primary animate-logo-glow transition-transform duration-300 hover:scale-[1.04]">
+                <span className="pointer-events-none absolute -inset-1 rounded-full bg-primary/40 blur-sm opacity-70 animate-pulse [animation-duration:1.6s]" />
+                <span className="pointer-events-none absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,transparent_0deg,rgba(255,255,255,0.95)_70deg,transparent_145deg,rgba(255,214,102,0.95)_220deg,transparent_290deg,rgba(255,255,255,0.9)_360deg)] animate-spin [animation-duration:2.8s]" />
+                <div className="relative z-10 h-full w-full rounded-full bg-footer/95 ring-1 ring-white/12 flex items-center justify-center overflow-hidden">
                   <img
                     src={logo}
                     alt="Crackers Kingdom"
-                    className="h-[90%] w-[90%] rounded-full object-contain drop-shadow-[0_2px_10px_rgba(247,201,72,0.35)]"
+                    className="h-full w-full rounded-full object-contain p-1"
                   />
                 </div>
+                <span className="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-full">
+                  <span className="absolute top-[-14%] left-[-75%] h-[128%] w-[48%] bg-linear-to-r from-transparent via-white/95 to-transparent animate-[shine-sweep_2.1s_linear_infinite]" />
+                </span>
               </div>
             </div>
-            <p className="text-sm leading-relaxed opacity-70 max-w-[220px]">
-              Premium fireworks sourced directly from Sivakasi — delivered safely across India.
-            </p>
+
+            <div className="max-w-[240px] pt-5 text-left">
+              <p className="text-sm leading-relaxed text-footer-foreground/75">
+                Premium Sivakasi fireworks, sourced directly from trusted manufacturers and delivered safely across India.
+              </p>
+            </div>
+
             <div className="flex gap-3 pt-1">
               {[Facebook, Linkedin, Twitter].map((Icon, i) => (
                 <a
@@ -50,7 +46,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* ── Explore ── */}
+          {/* Explore */}
           <div className="lg:col-span-2">
             <h4 className="font-display font-bold text-card mb-5">Explore</h4>
             <nav className="flex flex-col gap-3">
@@ -71,11 +67,10 @@ const Footer = () => {
             </nav>
           </div>
 
-          {/* ── Reach Us (Visit & Contact Combined) ── */}
+          {/* Reach Us */}
           <div className="lg:col-span-4 lg:pl-10">
             <h4 className="font-display font-bold text-card mb-5">Reach Us</h4>
             <div className="space-y-6">
-              {/* Visit Us */}
               <div className="flex items-start gap-2 text-sm">
                 <MapPin size={16} className="text-primary mt-0.5 shrink-0" />
                 <p className="leading-relaxed">
@@ -87,16 +82,13 @@ const Footer = () => {
                 </p>
               </div>
 
-              {/* Get in Touch */}
               <div className="space-y-4">
                 <a
                   href="mailto:crackerskingdom26@gmail.com"
                   className="flex items-start gap-2 text-sm hover:text-primary transition-colors group"
                 >
                   <Mail size={15} className="text-primary shrink-0 mt-0.5" />
-                  <p className="wrap-break-word leading-snug">
-                    crackerskingdom26@gmail.com
-                  </p>
+                  <p className="wrap-break-word leading-snug">crackerskingdom26@gmail.com</p>
                 </a>
 
                 <a
@@ -108,44 +100,61 @@ const Footer = () => {
                 </a>
               </div>
 
-              <p className="text-xs font-bold text-card">
-                GST IN :30239HHJ343HG393
-              </p>
+              <p className="text-xs font-bold text-card">GST IN :30239HHJ343HG393</p>
             </div>
           </div>
 
-          {/* ── Legal Notice ── */}
+          {/* Legal Notice */}
           <div className="md:col-span-2 lg:col-span-3">
             <h4 className="font-display font-bold text-primary mb-5">Legal Notice</h4>
-            <div className="bg-card/5 border border-card/10 rounded-xl p-4">
-              <p className="text-xs leading-relaxed text-footer-foreground/75 font-medium italic text-justify indent-4">
-                Online sale of firecrackers is not allowed. You can view and select the products on
-                our website only to get a price estimate. After selecting the items, please click
-                the <span className="text-card font-bold">"Get Estimate"</span> button and submit
-                your request. Our team will contact you within 2 hours to confirm your order
-                details. <span className="text-card font-bold">Crackers Kingdom</span> follows all
-                legal rules and regulations under License:{" "}
-                <span className="text-card font-bold">
-                  M/S NANDHINI TRADERS, SURVEY NO: 299/13A1C, 299/15A2
-                </span>
-                . We send parcels only through legally approved and registered transport services, as
-                per the standard guidelines followed in Sivakasi.
+
+            <div className="bg-card/5 border border-card/10 rounded-xl p-4 space-y-2">
+              <p className="text-xs text-footer-foreground/75 text-justify indent-4 leading-relaxed">
+                As per the <span className="text-card font-semibold">Supreme Court Order (2018)</span>,
+                direct online sale of firecrackers is not permitted. This website is provided only for
+                viewing products and submitting an estimate request.
+              </p>
+
+              <p className="text-xs text-footer-foreground/75 text-justify indent-4 leading-relaxed">
+                Customers may select products and submit their request using the
+                <span className="text-card font-semibold"> "Get Estimate"</span> option.
+                Our team will contact you to confirm the order details.
+              </p>
+
+              <p className="text-xs text-footer-foreground/75 text-justify indent-4 leading-relaxed">
+                We operate under the licensed entity
+                <span className="text-card font-semibold"> M/S NANDHINI TRADERS, Survey No: 299/13A1C, 299/15A2 </span>
+                and strictly follow all legal and safety regulations.
+              </p>
+
+              <p className="text-xs text-footer-foreground/75 text-justify indent-4 leading-relaxed">
+                All orders are dispatched only through registered and legally authorized
+                parcel transport services as per Sivakasi standards.
               </p>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* ── Bottom bar ── */}
+      {/* Bottom bar */}
       <div className="border-t border-card/10">
         <div className="max-w-[1400px] mx-auto section-padding py-5 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs opacity-60">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Crackers Kingdom" className="h-8 w-8 rounded-full" />
+            <div className="relative h-8 w-8 rounded-full p-px overflow-visible bg-linear-to-br from-primary via-festive-gold to-primary animate-logo-glow">
+              <span className="pointer-events-none absolute -inset-[2px] rounded-full bg-primary/40 blur-xs opacity-70 animate-pulse [animation-duration:1.6s]" />
+              <span className="pointer-events-none absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,transparent_0deg,rgba(255,255,255,0.95)_70deg,transparent_145deg,rgba(255,214,102,0.95)_220deg,transparent_290deg,rgba(255,255,255,0.9)_360deg)] animate-spin [animation-duration:2.8s]" />
+              <div className="relative z-10 h-full w-full rounded-full bg-footer/95 ring-1 ring-white/12 overflow-hidden">
+                <img src={logo} alt="Crackers Kingdom" className="h-full w-full rounded-full object-contain p-px" />
+              </div>
+              <span className="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-full">
+                <span className="absolute top-[-14%] left-[-75%] h-[128%] w-[48%] bg-linear-to-r from-transparent via-white/95 to-transparent animate-[shine-sweep_2.1s_linear_infinite]" />
+              </span>
+            </div>
             <span>
-              Copyright © 2026 <strong>Crackers Kingdom</strong>. All rights reserved.
+              Copyright (c) 2026 <strong>Crackers Kingdom</strong>. All rights reserved.
             </span>
           </div>
+
           <span>
             Designed by{" "}
             <a href="#" className="text-primary underline hover:opacity-80 transition-opacity">

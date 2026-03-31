@@ -10,78 +10,126 @@ interface SEOProps {
   title?: string;
   description?: string;
   canonical?: string;
-  ogType?: string;
+  ogType?: "website" | "article";
   ogImage?: string;
   twitterHandle?: string;
+  keywords?: string;
+  noIndex?: boolean;
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
+const SITE_URL = "https://crackerskingdom-demo2.netlify.app";
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og/index-og.svg?v=2`;
+
+const toAbsoluteUrl = (url: string) => {
+  if (!url) return SITE_URL;
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${SITE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 const SEO = ({
-  title = "Crackers Kingdom — Premium Fireworks & Sparklers in Sivakasi",
-  description = "Crackers Kingdom is your trusted destination for premium quality fireworks, sparklers, and festive crackers from Sivakasi. Safe, certified, and perfect for every celebration.",
-  canonical = "https://crackerskingdom.in",
+  title = "Premium Sivakasi Fireworks Estimate Online",
+  description = "Crackers Kingdom is your trusted destination for premium Sivakasi fireworks, safe festival crackers, and legal parcel dispatch across India.",
+  canonical,
   ogType = "website",
-  ogImage = "/og-image.png",
+  ogImage = DEFAULT_OG_IMAGE,
   twitterHandle = "@CrackersKingdom",
+  keywords,
+  noIndex = false,
+  structuredData,
 }: SEOProps) => {
   const siteName = SHOP_NAME;
   const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
 
+  const resolvedCanonical = canonical
+    ? toAbsoluteUrl(canonical)
+    : typeof window !== "undefined"
+      ? toAbsoluteUrl(window.location.pathname)
+      : SITE_URL;
+
+  const resolvedOgImage = toAbsoluteUrl(ogImage);
+  const robotsContent = noIndex ? "noindex, nofollow" : "index, follow";
+  const googleBotContent = noIndex
+    ? "noindex, nofollow"
+    : "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1";
+  const localBusinessSchema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    name: SHOP_NAME,
+    image: `${SITE_URL}/logo.png`,
+    description,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: ADDRESS_STREET,
+      addressLocality: ADDRESS_LOCALITY,
+      addressRegion: ADDRESS_REGION,
+      addressCountry: "IN",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "9.4533",
+      longitude: "77.8024",
+    },
+    url: SITE_URL,
+    telephone: "+91 81442 71571",
+  };
+  const schemaEntries = [
+    localBusinessSchema,
+    ...(Array.isArray(structuredData)
+      ? structuredData
+      : structuredData
+        ? [structuredData]
+        : []),
+  ];
+
   return (
-    <Helmet>
-      {/* Standard Metadata */}
+    <Helmet prioritizeSeoTags>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      <link rel="canonical" href={canonical} />
+      {keywords ? <meta name="keywords" content={keywords} /> : null}
+      <meta name="language" content="en-IN" />
+      <meta name="geo.region" content="IN-TN" />
+      <meta name="geo.placename" content={ADDRESS_LOCALITY} />
+      <meta name="referrer" content="strict-origin-when-cross-origin" />
+      <link rel="canonical" href={resolvedCanonical} />
+      <link rel="alternate" hrefLang="en-IN" href={resolvedCanonical} />
+      <link rel="alternate" hrefLang="x-default" href={resolvedCanonical} />
 
-      {/* Mobile Optimization */}
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
-      <meta name="theme-color" content="#fbbf24" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+      <meta name="theme-color" content="#d4a629" />
+      <meta name="format-detection" content="telephone=yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-title" content={siteName} />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-      {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:site_name" content={siteName} />
-      <meta property="og:url" content={canonical} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:url" content={resolvedCanonical} />
+      <meta property="og:image" content={resolvedOgImage} />
+      <meta property="og:image:alt" content={fullTitle} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:locale" content="en_IN" />
 
-      {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content={twitterHandle} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={resolvedOgImage} />
+      <meta name="twitter:image:alt" content={fullTitle} />
+      <meta name="twitter:url" content={resolvedCanonical} />
 
-      {/* Search Engine Directives */}
-      <meta name="robots" content="index, follow" />
-      <meta name="googlebot" content="index, follow" />
+      <meta name="robots" content={robotsContent} />
+      <meta name="googlebot" content={googleBotContent} />
 
-      {/* Structured Data for Local Business */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Store",
-          "name": SHOP_NAME,
-          "image": "https://crackerskingdom.in/logo.png",
-          "description": "Premium fireworks and crackers shop in Sivakasi.",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": ADDRESS_STREET,
-            "addressLocality": ADDRESS_LOCALITY,
-            "addressRegion": ADDRESS_REGION,
-            "addressCountry": "IN"
-          },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "9.4533",
-            "longitude": "77.8024"
-          },
-          "url": "https://crackerskingdom.in",
-          "telephone": "+91 81442 71571"
-        })}
-      </script>
+      {schemaEntries.map((schema, index) => (
+        <script key={`ld-json-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+      ))}
     </Helmet>
   );
 };

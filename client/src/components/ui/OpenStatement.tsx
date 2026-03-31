@@ -5,11 +5,10 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ShieldCheck, Phone } from "lucide-react";
 
 interface OpenStatementProps {
     isOpen: boolean;
@@ -26,57 +25,80 @@ const OpenStatement: React.FC<OpenStatementProps> = ({ isOpen, onOpenChange }) =
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[450px] p-6 gap-6 rounded-xl border border-border bg-card shadow-2xl">
-                <DialogHeader className="space-y-3 text-center sm:text-left">
-                    <div className="flex items-center justify-center sm:justify-start gap-2 text-destructive">
-                        <AlertCircle className="w-5 h-5" />
-                        <DialogTitle className="text-xl font-bold tracking-tight">
+            <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[460px] p-0 gap-0 rounded-xl border border-border bg-card shadow-2xl overflow-hidden">
+
+                {/* Header Banner */}
+                <div className="bg-destructive/10 border-b border-destructive/20 px-6 py-4 flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-destructive shrink-0" />
+                    <div>
+                        <DialogTitle className="text-base font-bold text-destructive leading-tight">
                             Important Legal Notice
                         </DialogTitle>
-                    </div>
-                    <DialogDescription className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                        As per Supreme Court Order (2018)
-                    </DialogDescription>
-                </DialogHeader>
-
-                <div className="space-y-4 py-2">
-                    <p className="text-sm font-bold text-destructive italic text-center sm:text-left">
-                        "Online sale of firecrackers is strictly prohibited."
-                    </p>
-
-                    <div className="text-sm text-foreground/80 leading-relaxed space-y-3">
-                        <p>
-                            You may browse our catalog for <span className="font-bold underline cursor-default">price estimation purposes only</span>. To proceed, add items and click "Get Estimate".
-                        </p>
-                        <p>
-                            Our team responds to all inquiries within 2 hours.
-                        </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-border/50 text-[11px] text-muted-foreground leading-snug">
-                        <p className="font-semibold text-foreground mb-1">Crackers Kingdom License:</p>
-                        <p>RSK AGENCIES (No: X/20XX)</p>
-                        <p className="mt-2 text-[10px] italic">
-                            Dispatched only via authorized transport services in Sivakasi.
+                        <p className="text-[11px] text-destructive/70 mt-0.5">
+                            As per Hon'ble Supreme Court & Explosives Act
                         </p>
                     </div>
                 </div>
 
-                <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2">
+                {/* Main Content */}
+                <div className="px-6 py-5 space-y-5">
+
+                    {/* Notice Point 1 */}
+                    <div className="flex gap-3">
+                        <span className="mt-1 w-2 h-2 rounded-full bg-destructive shrink-0" />
+                        <p className="text-sm text-foreground leading-relaxed">
+                            <span className="font-bold text-destructive">Online sale of firecrackers is strictly prohibited</span> in India as per Supreme Court order.
+                        </p>
+                    </div>
+
+                    {/* Notice Point 2 */}
+                    <div className="flex gap-3">
+                        <span className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
+                        <p className="text-sm text-foreground leading-relaxed">
+                            This website is for <span className="font-semibold underline">enquiry & price estimation only</span>. Browse our catalogue and submit an estimate request.
+                        </p>
+                    </div>
+
+                    {/* Notice Point 3 */}
+                    <div className="flex gap-3">
+                        <span className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
+                        <p className="text-sm text-foreground leading-relaxed">
+                            Our team will contact you to confirm your order, pricing, and delivery — fully compliant with all legal guidelines.
+                        </p>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-border/50 pt-4 flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <ShieldCheck className="w-4 h-4 text-green-500 shrink-0" />
+                            <span>Licensed & authorized seller — dispatched via registered transport (Sivakasi)</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Phone className="w-4 h-4 text-primary shrink-0" />
+                            <span>We respond to all enquiries within <span className="font-semibold text-foreground">2 hours</span></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* Footer */}
+                <DialogFooter className="px-6 py-5 border-t border-border/40 flex flex-col-reverse sm:flex-row sm:justify-end gap-3 bg-muted/10">
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => onOpenChange(false)}
-                        className="h-10 rounded-lg px-6 font-bold text-xs uppercase tracking-widest hover:bg-secondary"
+                        className="h-11 rounded-xl px-7 font-bold text-xs uppercase tracking-widest border border-border/60 bg-background/50 backdrop-blur-sm hover:bg-secondary/40 hover:border-border/80 text-foreground/70 hover:text-foreground transition-all duration-300 active:scale-[0.98] ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
-                        Continue
+                        Close
                     </Button>
                     <Button
                         onClick={handleGetEstimate}
-                        className="h-10 rounded-lg bg-primary text-white font-bold text-xs uppercase tracking-widest hover:bg-primary/90 shadow-xl shadow-primary/20"
+                        className="h-11 rounded-xl px-8 font-bold text-xs uppercase tracking-widest bg-linear-to-r from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 border border-primary/20 hover:from-primary/95 hover:to-primary hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 active:scale-[0.97] ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative overflow-hidden group"
                     >
-                        Get Estimate
+                        <span className="relative z-10">Get Estimate</span>
+                        <div className="absolute inset-0 h-full w-full bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] skew-x-30 transition-transform duration-700 group-hover:translate-x-[150%]" />
                     </Button>
                 </DialogFooter>
+
             </DialogContent>
         </Dialog>
     );

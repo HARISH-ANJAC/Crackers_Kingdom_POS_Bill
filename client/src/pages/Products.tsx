@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search as SearchIcon,
@@ -28,7 +28,7 @@ import rockets from "@/assets/rockets.jpg";
 import repeatingShots from "@/assets/repeating-shots.jpg";
 import bombs from "@/assets/bombs.jpg";
 
-// ── Types ──────────────────────────────────────────────────────────────
+// -- Types --------------------------------------------------------------
 interface Product {
   id: string;
   name: string;
@@ -43,12 +43,12 @@ interface Category {
   products: Product[];
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────
+// -- Helpers ------------------------------------------------------------
 const MIN_ORDER_AMOUNT = 3000;
 const formatCurrency = (n: number) =>
-  `₹${n.toLocaleString("en-IN")}`;
+  `?${n.toLocaleString("en-IN")}`;
 
-// ── Data ───────────────────────────────────────────────────────────────
+// -- Data ---------------------------------------------------------------
 const categories: Category[] = [
   {
     name: "CHAKKARS",
@@ -101,7 +101,16 @@ const categories: Category[] = [
   },
 ];
 
-// ── Component ──────────────────────────────────────────────────────────
+const productsStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Fireworks Price List and Estimate Form",
+  description:
+    "Browse our Sivakasi fireworks price list, add quantities, and submit your estimate form online. Get a confirmation call within 2 hours.",
+  url: "https://crackerskingdom.in/products",
+  inLanguage: "en-IN",
+};
+// -- Component ----------------------------------------------------------
 const Products = () => {
   const navigate = useNavigate();
 
@@ -112,7 +121,7 @@ const Products = () => {
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   const [isLegalOpen, setIsLegalOpen] = useState(false);
 
-  // Static data — no async fetch needed
+  // Static data � no async fetch needed
   const isLoading = false;
 
   const handleQuantityChange = (id: string, value: string) => {
@@ -207,7 +216,7 @@ const Products = () => {
     });
   };
 
-  // ── Empty-state check ─────────────────────────────────────────────
+  // -- Empty-state check ---------------------------------------------
   const isAllEmpty = categories.every((cat) => {
     if (selectedCategory !== "All" && cat.name !== selectedCategory) return true;
     return (
@@ -220,8 +229,12 @@ const Products = () => {
   return (
     <div>
       <SEO
-        title="Estimate Crackers Online | Crackers Kingdom Price List 2025–26"
-        description="Browse Crackers Kingdom's complete fireworks price list. Add quantities, build your estimate, and submit — our team contacts you within 2 hours to confirm. Pan-India parcel delivery from Sivakasi."
+        title="Fireworks Price List and Estimate Form"
+        description="Browse our Sivakasi fireworks price list, add quantities, and submit your estimate form online. Get a confirmation call within 2 hours."
+        canonical="/products"
+        keywords="fireworks price list, crackers estimate form, sivakasi crackers rates, diwali crackers online estimate"
+        ogImage="/og/products-og.svg?v=2"
+        structuredData={productsStructuredData}
       />
       <PageHeader
         title="ESTIMATE FORM"
@@ -231,7 +244,7 @@ const Products = () => {
 
       <div className="min-h-screen bg-background pb-36 md:pb-40 overflow-x-hidden font-body">
 
-        {/* ── Banner ── */}
+        {/* -- Banner -- */}
         <div className="container-narrow px-4 mt-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -263,7 +276,7 @@ const Products = () => {
             </div>
           </motion.div>
         </div>
-        {/* ── Search + View Switcher ── */}
+        {/* -- Search + View Switcher -- */}
         <div className="container-narrow px-4 mt-10 flex flex-col md:flex-row gap-6">
           {/* Search */}
           <div className="relative group flex-1">
@@ -332,7 +345,7 @@ const Products = () => {
 
         {viewMode === 'table' ? (
           <>
-            {/* ── Order Table ── */}
+            {/* -- Order Table -- */}
             <div className="max-w-full container-narrow px-0 md:px-4 mt-10 pb-12 w-full overflow-hidden">
               <div className="bg-card md:rounded-3xl shadow-2xl overflow-hidden border border-border/60">
                 <table className="w-full text-left border-collapse table-auto">
@@ -538,7 +551,7 @@ const Products = () => {
           </div>
         )}
 
-        {/* ── Bottom Order Summary CTA (All Views) ── */}
+        {/* -- Bottom Order Summary CTA (All Views) -- */}
         <AnimatePresence>
           {totals.totalItems > 0 && (
             <motion.div
@@ -553,7 +566,7 @@ const Products = () => {
                     Order Summary
                   </p>
                   <p className="text-sm md:text-base font-black text-foreground">
-                    {totals.totalItems} items · <span className="text-primary">{formatCurrency(totals.totalAmount)}</span>
+                    {totals.totalItems} items � <span className="text-primary">{formatCurrency(totals.totalAmount)}</span>
                   </p>
                   <p className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground mt-1">
                     Minimum Order: {formatCurrency(MIN_ORDER_AMOUNT)}
@@ -578,7 +591,7 @@ const Products = () => {
           )}
         </AnimatePresence>
 
-        {/* ── Image Preview Modal (Shared) ── */}
+        {/* -- Image Preview Modal (Shared) -- */}
         <AnimatePresence>
           {selectedImage && (
             <motion.div
@@ -627,4 +640,9 @@ const Products = () => {
 };
 
 export default Products;
+
+
+
+
+
 

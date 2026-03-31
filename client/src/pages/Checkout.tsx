@@ -300,11 +300,11 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-background pb-28 lg:pb-0">
       <SEO
-        title="Checkout | Crackers Kingdom"
+        title="Order Enquiry | Crackers Kingdom"
         description="Confirm your customer details and submit your fireworks enquiry. Our team will contact you within 2 hours."
       />
       <PageHeader
-        title="Checkout"
+        title="Order Enquiry"
         subtitle="Fill customer details and place your enquiry"
         bgImage={headerBg}
       />
@@ -425,7 +425,7 @@ const Checkout = () => {
                 <div className="p-6 border-b border-border/60">
                   <h3 className="font-display text-xl font-black flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5 text-primary" />
-                    Order Summary
+                    Estimate Summary
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1">{totalQty} items selected</p>
                 </div>
@@ -616,7 +616,7 @@ const Checkout = () => {
                   Enquiry Confirmed
                 </p>
                 <h3 className="mt-2 text-center font-display text-3xl font-black text-foreground leading-tight">
-                  Order Placed Successfully
+                  Enquiry Placed Successfully
                 </h3>
                 <p className="mt-3 text-center text-sm md:text-base text-muted-foreground leading-relaxed">
                   Thanks for choosing Crackers Kingdom. Our team will contact you within 2 hours to

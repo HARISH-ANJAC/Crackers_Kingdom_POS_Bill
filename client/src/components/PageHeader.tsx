@@ -23,15 +23,15 @@ const PageHeader = ({ title, subtitle, bgImage }: PageHeaderProps) => {
     <section className="relative h-[250px] md:h-[300px] flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       {bgImage ? (
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[20s] hover:scale-110"
           style={{ backgroundImage: `url(${bgImage})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/40 to-black/60" />
         </div>
       ) : (
         <div className="absolute inset-0 bg-foreground">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
         </div>
       )}
 
@@ -48,7 +48,7 @@ const PageHeader = ({ title, subtitle, bgImage }: PageHeaderProps) => {
             </p>
           )}
         </ScrollReveal>
-        
+
         <ScrollReveal delay={0.1}>
           <nav className="flex items-center justify-center gap-2 mt-8 py-2 px-4 bg-black/30 backdrop-blur-md rounded-full w-fit mx-auto border border-white/10 shadow-xl transition-all hover:bg-black/40">
             <Link
