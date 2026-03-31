@@ -9,7 +9,6 @@ import SEO from "@/components/SEO";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Products from "./pages/Products";
 import Safety from "./pages/Safety";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
@@ -19,6 +18,7 @@ import { useState } from "react";
 import OpenStatement from "@/components/ui/OpenStatement";
 import QuickEnquiry from "@/components/QuickEnquiry";
 import WhatsAppButton from "./components/WhatsAppButton";
+import Products from "./pages/Products";
 
 const queryClient = new QueryClient();
 

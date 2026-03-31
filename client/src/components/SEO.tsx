@@ -18,7 +18,7 @@ interface SEOProps {
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
-const SITE_URL = "https://crackerskingdom-demo2.netlify.app";
+const SITE_URL = "https://crackerskingdom.in";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og/index-og.svg?v=2`;
 
 const toAbsoluteUrl = (url: string) => {

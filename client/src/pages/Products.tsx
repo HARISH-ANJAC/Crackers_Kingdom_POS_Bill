@@ -121,7 +121,7 @@ const Products = () => {
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   const [isLegalOpen, setIsLegalOpen] = useState(false);
 
-  // Static data — no async fetch needed
+  // Static data â€” no async fetch needed
   const isLoading = false;
 
   const handleQuantityChange = (id: string, value: string) => {
@@ -566,7 +566,7 @@ const Products = () => {
                     Order Summary
                   </p>
                   <p className="text-sm md:text-base font-black text-foreground">
-                    {totals.totalItems} items · <span className="text-primary">{formatCurrency(totals.totalAmount)}</span>
+                    {totals.totalItems} items Â· <span className="text-primary">{formatCurrency(totals.totalAmount)}</span>
                   </p>
                   <p className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground mt-1">
                     Minimum Order: {formatCurrency(MIN_ORDER_AMOUNT)}
