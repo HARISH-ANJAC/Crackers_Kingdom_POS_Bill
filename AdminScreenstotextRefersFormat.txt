@@ -1,0 +1,571 @@
+Based on a comprehensive analysis of your SQL schema files and project documentation, I've designed a complete set of screen ideas for your Agro Business Management System. The screens are organized by module and workflow, reflecting the business processes you've outlined.
+
+## Executive Summary
+
+The system requires **42 core screens** organized into 8 modules, supporting 5 user roles with distinct workflows for purchase, sales, inventory, and financial operations.
+
+---
+
+# MODULE 1: AUTHENTICATION & DASHBOARD
+
+## Screen 1.1: Login Screen
+**Purpose**: User authentication and role-based redirection
+**Components**:
+- Username/Email field
+- Password field with show/hide toggle
+- "Remember Me" checkbox
+- Login button
+- Password reset link
+- Company logo display
+- Background image with agricultural theme
+- Captcha for security (optional)
+
+## Screen 1.2: Role-Based Dashboard
+**Purpose**: Personalized landing page showing relevant KPIs
+**Components by Role**:
+- **Admin**: System health, user activity, pending approvals count
+- **Finance**: Today's receipts, pending invoices, expense summaries
+- **Sales**: Today's orders, delivery schedule, sales targets
+- **Warehouse**: GRNs pending, low stock alerts, today's dispatches
+- **Common**: Quick action buttons, notifications, recent transactions
+
+---
+
+# MODULE 2: MASTER DATA MANAGEMENT
+
+## Screen 2.1: Company Profile Management
+**Purpose**: Manage company information and settings
+**Tabs/Sections**:
+- **Basic Info**: Company name, TIN, address, contact details
+- **Financial Settings**: Finance start/end month, year code, currency
+- **Logo Upload**: Company logo, small logo, letter head, stamp
+- **Configuration**: VAT settings, rounding rules, GPS settings
+- **User Limits**: Number of users allowed
+
+## Screen 2.2: Product Category Management
+**Purpose**: Hierarchical product category setup
+**Features**:
+- Tree view of Main Categories → Sub Categories
+- Add/Edit Main Category (Name, Remarks, Status)
+- Add/Edit Sub Category (Name, Main Category selection, Remarks)
+- Drag-and-drop reordering
+- Category-wise product count
+- Bulk import/export
+
+## Screen 2.3: Product Master
+**Purpose**: Complete product catalog management
+**List View**:
+- Search by name, category, status
+- Filters: Category, Sub-category, Status
+- Columns: Product Name, Main Category, Sub-category, UOM, Status
+- Actions: Edit, View, Deactivate, Clone
+
+**Add/Edit Form**:
+- Product Name (Unique)
+- Main Category (Dropdown)
+- Sub Category (Dropdown, filtered by Main Category)
+- UOM (Dropdown)
+- Qty Per Packing
+- Alternate UOM
+- Remarks
+- Status (Active/Inactive)
+- Audit trail display
+
+## Screen 2.4: Supplier Master
+**Purpose**: Manage supplier information
+**Features**:
+- Supplier list with search
+- Quick add from purchase workflow
+- **Form Sections**:
+  - Basic: Name, TIN, VAT Number
+  - Contact: Person, Number, Email
+  - Location: Address, Billing Location
+  - Status & Remarks
+  - Document upload (TIN certificate, etc.)
+
+## Screen 2.5: Customer Master
+**Purpose**: Comprehensive customer management
+**Advanced Features**:
+- Customer details with multiple addresses
+- Credit limit management
+- Customer-specific pricing
+- VAT settings per customer
+- Document attachments
+- Payment mode preferences
+- Customer tier/category
+- Contact hierarchy (Company Head, Accounts, etc.)
+
+## Screen 2.6: Customer Credit Limit Management
+**Purpose**: Handle credit limit requests and approvals
+**Workflow View**:
+- Pending requests list
+- Request details with comparison:
+  - Current limit vs. Requested limit
+  - Sales person recommendation
+  - Outstanding amounts
+- Approval chain display
+- Decision controls with remarks
+
+## Screen 2.7: Customer Price Request Management
+**Purpose**: Manage customer-specific pricing requests
+**Features**:
+- List of price requests with status
+- Comparison view:
+  - Current price vs. Requested price
+  - Cost price
+  - Gross margin calculations
+- Approval workflow (Accounts → Management)
+- Effective date range
+- Bulk approval option
+
+## Screen 2.8: Store/Location Master
+**Purpose**: Manage warehouses and stores
+**Form Fields**:
+- Store Name
+- Store Short Code
+- Location (from Location Master)
+- Manager Name
+- Contact Email (with CC/BCC)
+- Status
+- Store Short Name
+
+## Screen 2.9: Payment Terms & Modes
+**Purpose**: Configure payment configurations
+**Tabs**:
+- **Payment Terms**: List of terms (Net 30, etc.)
+- **Payment Modes**: Cash, Bank Transfer, Cheque, etc.
+- **Bank Accounts**: Company bank accounts with currency
+- **Customer Payment Modes**: Available payment options for customers
+
+## Screen 2.10: Expense Categories
+**Purpose**: Manage types of expenses
+**Features**:
+- Category list (Transport, Accommodation, etc.)
+- Default amounts per day (optional)
+- Validity periods
+- Status control
+
+---
+
+# MODULE 3: PURCHASE MANAGEMENT
+
+## Screen 3.1: Purchase Order List
+**Purpose**: Central view of all purchase orders
+**Features**:
+- Advanced filters: Date range, Supplier, Status, Company
+- Columns: PO Number, Date, Supplier, Amount, Status
+- Status indicators: Draft, Submitted, Approved, Rejected
+- Quick actions: View, Edit, Create GRN, Create Invoice
+- Export to Excel/PDF
+
+## Screen 3.2: Create/Edit Purchase Order
+**Purpose**: Create new purchase orders
+**Header Section**:
+- PO Number (Auto-generated: PO/{ProductCode}/{Month}/{RunningNumber})
+- PO Date
+- Purchase Type (Local/Import)
+- Company (Dropdown)
+- Supplier (Searchable dropdown)
+- Store (Receiving store)
+- Payment Term
+- Mode of Payment
+- Currency
+- Exchange Rate
+
+**Line Items Section**:
+- Product search/selection
+- Quantity, UOM, Rate
+- Discount (% and amount)
+- VAT calculation
+- Subtotal per line
+- Add/Remove rows
+- Bulk import option
+
+**Additional Costs Section**:
+- Cost type (Transport, Insurance, etc.)
+- Amount
+- Allocation method (per product or header level)
+
+**Footer**:
+- Totals display
+- Remarks
+- Submit for approval button
+- Save as Draft
+
+## Screen 3.3: Purchase Order Approval
+**Purpose**: Multi-level approval workflow
+**Features**:
+- Side-by-side comparison of requested vs. approved values
+- Approval chain visualization
+- Decision buttons (Approve/Reject/Request Changes)
+- Remarks input
+- Attachment viewing
+- Conversation/comment thread
+
+## Screen 3.4: Proforma Quotation Management
+**Purpose**: Handle supplier quotations before PO
+**Similar to PO** but with:
+- Supplier proforma number tracking
+- Quotation comparison view
+- Multiple suppliers per request
+- Quotation conversion to PO
+
+## Screen 3.5: Goods Receipt Note (GRN)
+**Purpose**: Record goods arrival
+**Workflow**:
+- Select PO (auto-populate details)
+- Verify/update received quantities
+- Record condition notes
+- Add container/vehicle details
+- Driver information
+- Multiple receipts per PO allowed
+
+**Form Fields**:
+- GRN Number (Auto)
+- GRN Date
+- PO Reference
+- Supplier (from PO)
+- Vehicle/Container No
+- Driver Name/Contact
+- Seal No
+- Line items with received quantity
+- Remarks
+
+## Screen 3.6: Supplier Invoice Processing
+**Purpose**: Record and validate supplier invoices
+**Three-Way Matching View**:
+- PO details
+- GRN details
+- Invoice details
+- Side-by-side comparison
+- Mismatch highlighting
+- Block confirmation if mismatches found
+
+**Form**:
+- Invoice Number (Supplier)
+- Invoice Date
+- Line items with quantities
+- Additional costs
+- Totals
+- Attachment upload (invoice PDF/image)
+
+---
+
+# MODULE 4: INVENTORY MANAGEMENT
+
+## Screen 4.1: Current Stock View
+**Purpose**: Real-time inventory across stores
+**Features**:
+- Store selector
+- Search by product/category
+- Columns: Product, Category, Available Qty, Reserved, On Order
+- Color-coded stock levels (Green: Normal, Yellow: Low, Red: Critical)
+- Export option
+- Refresh button
+
+## Screen 4.2: Opening Stock Entry
+**Purpose**: Initial stock setup or adjustments
+**Features**:
+- Bulk entry grid
+- Product selection
+- Quantity and date
+- Store selection
+- Reason/Remarks
+- Approval required for adjustments
+
+## Screen 4.3: Minimum Stock Settings
+**Purpose**: Configure reorder levels
+**Form**:
+- Store
+- Product
+- Minimum Stock Level
+- Purchase Alert Quantity
+- Effective From/To
+- Status
+
+## Screen 4.4: Stock Movement History
+**Purpose**: Audit trail of all stock changes
+**View**:
+- Date range filter
+- Transaction type filter (GRN, Delivery, Adjustment)
+- Product filter
+- Columns: Date, Type, Reference, In/Out, Balance
+- Drill-down to source document
+
+## Screen 4.5: Low Stock Alert Dashboard
+**Purpose**: Highlight products needing reorder
+**Features**:
+- List of products below minimum
+- Current stock vs. Minimum
+- Suggested order quantity
+- Quick PO creation option
+- Export to purchase request
+
+---
+
+# MODULE 5: SALES MANAGEMENT
+
+## Screen 5.1: Sales Order List
+**Purpose**: Manage customer orders
+**Features**:
+- Filters: Customer, Date, Status
+- Columns: Order No, Date, Customer, Amount, Status
+- Quick actions: View, Create Delivery, Invoice
+
+## Screen 5.2: Create Sales Order
+**Purpose**: Enter customer orders
+**Header**:
+- Order Number (Auto)
+- Order Date
+- Customer (with credit check display)
+- Billing Location
+- Sales Person
+- Currency
+- Exchange Rate
+
+**Line Items**:
+- Product selection
+- Available stock display
+- Quantity
+- Rate (from customer-specific pricing)
+- Discount
+- VAT
+- Totals
+
+**Footer**:
+- Credit limit warning (if exceeding)
+- Total amount
+- Remarks
+- Submit/Save
+
+## Screen 5.3: Delivery Note Creation
+**Purpose**: Record goods dispatch
+**Features**:
+- Select from Sales Orders
+- Partial delivery support
+- Vehicle/trip information
+- Driver details
+- Seal numbers
+- Delivery confirmation
+
+## Screen 5.4: Tax Invoice Generation
+**Purpose**: Create customer invoices
+**Workflow**:
+- Select Delivery Note(s)
+- Consolidate or separate invoices
+- Invoice numbering
+- Print format preview
+- Email to customer option
+- E-invoice integration (if applicable)
+
+## Screen 5.5: Customer Receipt Entry
+**Purpose**: Record payments from customers
+**Form**:
+- Receipt Number (Auto)
+- Receipt Date
+- Customer (with outstanding display)
+- Payment Mode
+- Bank/Account details
+- Transaction Reference
+- Amount
+- Allocation to invoices (grid showing outstanding invoices)
+- Remarks
+
+---
+
+# MODULE 6: EXPENSE MANAGEMENT
+
+## Screen 6.1: Expense Entry
+**Purpose**: Record all business expenses
+**Form**:
+- Expense Date
+- Expense Type (Category)
+- Amount
+- Currency
+- Exchange Rate (if foreign)
+- Against: Purchase Order / General
+- Product allocation (if PO-linked)
+- Service Provider
+- Receipt Number
+- Receipt Date
+- Service Provider TIN
+- Notes
+- Attachment upload
+
+## Screen 6.2: Expense List
+**Purpose**: View and manage expenses
+**Features**:
+- Filters: Date, Category, PO
+- Columns: Date, Category, Amount, Linked PO, Status
+- Export for accounting
+- Edit/Delete with audit
+
+## Screen 6.3: Expense Allocation to Products
+**Purpose**: Distribute expenses to specific products
+**View**:
+- Select Expense
+- Show products in linked PO
+- Allocate amount proportionally
+- Manual override option
+- Save allocation
+
+---
+
+# MODULE 7: FINANCIAL & REPORTING
+
+## Screen 7.1: Purchase Reports
+**Tabs**:
+- **By Supplier**: Supplier-wise purchase summary
+- **Monthly Purchase**: Trend analysis
+- **Product Purchase**: Product-wise purchase analysis
+- **PO Status**: Pipeline view
+
+## Screen 7.2: Sales Reports
+**Tabs**:
+- **By Customer**: Customer-wise sales
+- **By Product**: Product performance
+- **Revenue Analytics**: Daily/Weekly/Monthly trends
+- **Invoice Aging**: Outstanding invoices
+
+## Screen 7.3: Expense Reports
+**Tabs**:
+- **By Category**: Expense distribution
+- **By PO**: PO-wise expense summary
+- **Trend Analysis**: Expense trends over time
+
+## Screen 7.4: Inventory Reports
+**Tabs**:
+- **Current Stock Valuation**: Stock value by product/store
+- **Stock Movement**: In/Out summary
+- **Slow Moving**: Products with low turnover
+- **Stock Aging**: Days in inventory
+
+## Screen 7.5: Financial Dashboard
+**Purpose**: Executive financial overview
+**Widgets**:
+- Total Purchases (MTD)
+- Total Sales (MTD)
+- Outstanding Payables
+- Outstanding Receivables
+- Cash/Bank Balance
+- Expense Breakdown (Pie Chart)
+- Top 5 Customers (Bar Chart)
+- Recent Transactions
+
+---
+
+# MODULE 8: SYSTEM ADMINISTRATION
+
+## Screen 8.1: User Management
+**Purpose**: Create and manage system users
+**Features**:
+- User list with status
+- Add/Edit user:
+  - Login Name
+  - Password (with strength meter)
+  - Personal Details
+  - Mobile/Email
+  - Status
+  - Outside Access permission
+- Password change log view
+
+## Screen 8.2: Role Management
+**Purpose**: Define user roles and permissions
+**Features**:
+- Role list
+- Permission matrix (Module → Create/Read/Update/Delete/Approve)
+- Copy role from existing
+- User assignment
+
+## Screen 8.3: User-Store-Role Mapping
+**Purpose**: Assign users to stores with roles
+**Interface**:
+- User selector
+- Store selector
+- Role selector
+- Multiple assignments
+- Effective dates
+- Status
+
+## Screen 8.4: User Signature Management
+**Purpose**: Manage approval signatures
+**Features**:
+- User selection
+- Signature upload
+- Approval permissions (PO, Credit Limit, Price, etc.)
+- Approval order/level
+- Email notification settings
+
+## Screen 8.5: Audit Log Viewer
+**Purpose**: System-wide audit trail
+**Features**:
+- Date range filter
+- User filter
+- Table/Module filter
+- Action type filter
+- Columns: Timestamp, User, Action, Table, Record ID, Details
+- Export capability
+
+## Screen 8.6: System Configuration
+**Purpose**: Global system settings
+**Tabs**:
+- **General**: Company-wide defaults
+- **VAT**: VAT percentages with effective dates
+- **Numbering**: Document number formats
+- **Notifications**: Email templates, triggers
+- **Backup**: Schedule and status
+
+---
+
+# MOBILE SCREEN CONSIDERATIONS (React Native)
+
+For field operations, optimize these screens for mobile:
+
+1. **Mobile Dashboard**: Key metrics, quick actions
+2. **GRN Creation**: Scan PO, enter received quantities
+3. **Delivery Confirmation**: Scan items, capture signature
+4. **Expense Entry**: Quick expense capture with photo
+5. **Stock Check**: Scan product, view stock
+6. **Sales Order Creation**: Quick order entry for field sales
+7. **Customer Visit Report**: Geo-tagged visit logging
+8. **Receipt Capture**: Photo of payment receipt
+
+---
+
+# SCREEN LAYOUT RECOMMENDATIONS
+
+## List Screens (Index Pages)
+- Search bar (top)
+- Filter panel (collapsible left/slide-in)
+- Table with sortable columns
+- Pagination
+- Action buttons per row
+- Bulk actions checkbox
+- Export button
+- Add New button (floating or top)
+
+## Form Screens
+- Sectioned with tabs for complex forms
+- Save/Cancel buttons (top and bottom)
+- Validation indicators
+- Auto-save draft
+- Audit trail display (at bottom)
+- Related documents panel (side)
+
+## Detail/View Screens
+- Header with key info and status badge
+- Tabs for different sections (Line Items, Costs, Attachments, Audit)
+- Action buttons (Edit, Print, Copy, Delete)
+- Timeline view of workflow
+- Related transactions list
+
+## Approval Screens
+- Split view (Request Details + Decision Panel)
+- Comparison tables
+- Remarks history
+- Document preview
+- Decision buttons with confirmation
+
+---
+
+This comprehensive screen design covers all modules identified in your SQL schema and addresses the business workflows from the project documentation. The screens are designed to support the multi-role, multi-store, and multi-currency requirements evident in your database structure.

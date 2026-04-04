@@ -24,10 +24,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import headerBg from "@/assets/header_contact_bg.png";
+import rockets from "@/assets/rockets.jpg"; // For fallback
+import { API_BASE_URL } from "@/services/api";
+import axios from "axios";
 
 interface CartItem {
   id: string;
   name: string;
+  content: string;
   qty: number;
   discPrice: number;
   img: string;
@@ -63,17 +67,18 @@ const Checkout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const getImageUrl = (img?: string) => {
+    if (!img) return rockets;
+    if (img.startsWith("http")) return img;
+    return `${API_BASE_URL}/${img.replace(/\\/g, '/')}`;
+  };
+
   const routeState = (location.state as CheckoutRouteState) || {};
   const initialCartItems = Array.isArray(routeState.cartItems) ? routeState.cartItems : [];
   const [checkoutItems, setCheckoutItems] = useState<CartItem[]>(initialCartItems);
 
   const savedEstimate = useMemo(() => {
-    try {
-      const raw = localStorage.getItem("last_estimate");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
+    return null;
   }, []);
 
   const fallbackLines = useMemo(() => {
@@ -101,6 +106,7 @@ const Checkout = () => {
   const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [placedTimestamp, setPlacedTimestamp] = useState("");
+  const [placedOrderNumber, setPlacedOrderNumber] = useState("");
   const lastConfettiFiredAt = useRef(0);
   const [formData, setFormData] = useState({
     phone: "",
@@ -108,6 +114,7 @@ const Checkout = () => {
     name: "",
     address: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (window.confetti) return;
@@ -134,6 +141,9 @@ const Checkout = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    // Clear error for this field
+    setErrors(prev => ({ ...prev, [name]: "" }));
+
     if (name === "phone") {
       setFormData((prev) => ({ ...prev, phone: cleanPhoneInput(value) }));
       return;
@@ -214,6 +224,8 @@ const Checkout = () => {
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
+    const newErrors: Record<string, string> = {};
+
     if (isBelowMinimum) {
       toast.error(
         `Minimum enquiry is ${formatCurrency(MIN_ENQUIRY_AMOUNT)}. Add ${formatCurrency(
@@ -224,22 +236,24 @@ const Checkout = () => {
     }
 
     if (formData.phone.length !== 10) {
-      toast.error("Please enter a valid 10-digit phone number.");
-      return;
+      newErrors.phone = "Please enter a valid 10-digit phone number.";
     }
 
     if (!isValidEmail(formData.email.trim())) {
-      toast.error("Please enter a valid email address.");
-      return;
+      newErrors.email = "Please enter a valid email address.";
     }
 
     if (!formData.name.trim()) {
-      toast.error("Please enter your full name.");
-      return;
+      newErrors.name = "Please enter your full name.";
     }
 
     if (!formData.address.trim()) {
-      toast.error("Please enter your address.");
+      newErrors.address = "Please enter your address.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Please fix the errors in the form.");
       return;
     }
 
@@ -258,30 +272,31 @@ const Checkout = () => {
           name: formData.name.trim(),
           address: formData.address.trim(),
         },
-        items:
-          checkoutItems.length > 0
-            ? checkoutItems.map((item) => ({
-              productId: item.id,
-              name: item.name,
-              quantity: item.qty,
-              unitPrice: item.discPrice,
-              totalPrice: item.qty * item.discPrice,
-            }))
-            : fallbackLines,
+        items: checkoutItems.length > 0
+          ? checkoutItems.map((item) => ({
+            productId: item.id,
+            productName: item.name,
+            productContent: item.content,
+            productImage: item.img,
+            quantity: item.qty,
+            unitPrice: item.discPrice,
+            totalPrice: item.qty * item.discPrice,
+          }))
+          : fallbackLines,
         subTotal: finalSubTotal,
         totalAmount: finalTotalAmount,
         totalQty,
       };
 
-      localStorage.setItem(
-        "last_checkout_submission",
-        JSON.stringify({ ...payload, timestamp: new Date().toISOString() })
-      );
+      const { data } = await axios.post(`${API_BASE_URL}/api/orders`, payload);
 
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      if (!data.success) {
+        throw new Error(data.message || "Failed to place order.");
+      }
 
-      toast.success("Enquiry placed successfully!");
-      localStorage.removeItem("last_estimate");
+      const orderId = data.order?.orderNumber || "";
+      setPlacedOrderNumber(orderId);
+      toast.success(`Order ${orderId} placed successfully! 🎉`);
       setPlacedTimestamp(
         new Date().toLocaleString("en-IN", {
           dateStyle: "medium",
@@ -290,8 +305,9 @@ const Checkout = () => {
       );
       setIsSuccessDialogOpen(true);
       window.requestAnimationFrame(() => fireConfettiCannon());
-    } catch {
-      toast.error("Unable to place enquiry. Please try again.");
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || "Unable to place enquiry. Please try again.";
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -351,9 +367,10 @@ const Checkout = () => {
                         value={formatPhoneDisplay(formData.phone)}
                         onChange={handleInputChange}
                         placeholder="Enter 10-digit mobile number"
-                        className="h-12 pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30"
+                        className={`h-12 pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30 ${errors.phone ? 'border-festive-ruby ring-1 ring-festive-ruby/20' : ''}`}
                       />
                     </div>
+                    {errors.phone && <p className="text-[10px] font-bold text-festive-ruby mt-1 ml-1 uppercase tracking-wider animate-shake">{errors.phone}</p>}
                   </div>
 
                   <div>
@@ -370,9 +387,10 @@ const Checkout = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="example@email.com"
-                        className="h-12 pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30"
+                        className={`h-12 pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30 ${errors.email ? 'border-festive-ruby ring-1 ring-festive-ruby/20' : ''}`}
                       />
                     </div>
+                    {errors.email && <p className="text-[10px] font-bold text-festive-ruby mt-1 ml-1 uppercase tracking-wider animate-shake">{errors.email}</p>}
                   </div>
 
                   <div>
@@ -388,9 +406,10 @@ const Checkout = () => {
                         value={formData.name}
                         onChange={handleInputChange}
                         placeholder="Your full name"
-                        className="h-12 pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30"
+                        className={`h-12 pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30 ${errors.name ? 'border-festive-ruby ring-1 ring-festive-ruby/20' : ''}`}
                       />
                     </div>
+                    {errors.name && <p className="text-[10px] font-bold text-festive-ruby mt-1 ml-1 uppercase tracking-wider animate-shake">{errors.name}</p>}
                   </div>
 
                   <div>
@@ -407,9 +426,10 @@ const Checkout = () => {
                         value={formData.address}
                         onChange={handleInputChange}
                         placeholder="Door No, Area, City, District, State"
-                        className="pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30 resize-none"
+                        className={`pl-11 bg-secondary/40 border-border focus-visible:ring-primary/30 resize-none ${errors.address ? 'border-festive-ruby ring-1 ring-festive-ruby/20' : ''}`}
                       />
                     </div>
+                    {errors.address && <p className="text-[10px] font-bold text-festive-ruby mt-1 ml-1 uppercase tracking-wider animate-shake">{errors.address}</p>}
                   </div>
                 </form>
               </motion.div>
@@ -438,10 +458,10 @@ const Checkout = () => {
                         <motion.div
                           whileHover={{ scale: 1.08 }}
                           whileTap={{ scale: 0.96 }}
-                          onClick={() => setSelectedImage({ url: item.img, name: item.name })}
+                          onClick={() => setSelectedImage({ url: getImageUrl(item.img), name: item.name })}
                           className="w-20 h-20 rounded-2xl overflow-hidden border border-border/60 bg-secondary/40 shrink-0 cursor-pointer"
                         >
-                          <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+                          <img src={getImageUrl(item.img)} alt={item.name} className="w-full h-full object-cover" />
                         </motion.div>
 
                         {/* Content */}
@@ -622,6 +642,27 @@ const Checkout = () => {
                   Thanks for choosing Crackers Kingdom. Our team will contact you within 2 hours to
                   confirm your order details.
                 </p>
+                {placedOrderNumber && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 }}
+                    className="mt-5 w-full rounded-2xl border border-primary/20 bg-linear-to-br from-primary/5 via-primary/10 to-transparent overflow-hidden"
+                  >
+                    <div className="px-5 py-2 border-b border-primary/10 flex items-center justify-between">
+                      <span className="text-[9px] font-black uppercase tracking-[0.25em] text-muted-foreground/70">Enquiry Reference</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    </div>
+                    <div className="px-5 py-4 flex flex-col text-center items-center gap-1">
+                      <span className="font-bold text-2xl md:text-3xl text-primary text-center drop-shadow-[0_0_12px_rgba(212,175,55,0.4)]">
+                        {placedOrderNumber}
+                      </span>
+                      <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                        Keep this ID for your records
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
                 {placedTimestamp && (
                   <p className="mt-3 text-center text-xs font-bold text-muted-foreground">
                     Placed on: {placedTimestamp}

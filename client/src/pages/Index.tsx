@@ -328,7 +328,7 @@ const Index = () => {
             {categories.map((c, i) => (
               <ScrollReveal key={c.name} delay={i * 0.07}>
                 <Link to="/products" className="group relative block aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-                  <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={c.image} alt={c.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-linear-to-t from-foreground/80 via-foreground/20 to-transparent" />
                   <div className="absolute bottom-4 left-4">
                     <h3 className="font-display font-bold text-card text-lg leading-tight">{c.name}</h3>
@@ -370,7 +370,7 @@ const Index = () => {
                 <div className="group bg-card rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-border/50">
                   <div className="relative overflow-hidden aspect-4/3 p-4">
                     <div className="w-full h-full rounded-3xl overflow-hidden relative">
-                      <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <img src={p.image} alt={p.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                     <span className="absolute top-8 left-8 text-[10px] font-black uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm">

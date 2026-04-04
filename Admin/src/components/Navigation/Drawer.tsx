@@ -36,6 +36,8 @@ import PDFViewer from '../../screens/PDFViewer';
 import SettingsScreen from '../../screens/SettingsScreen';
 import CustomerScreen from '../../screens/CustomerScreen';
 import TagScreen from '../../screens/TagScreen';
+import UomScreen from '../../screens/UomScreen';
+import BannerScreen from '../../screens/BannerScreen';
 
 export type DrawerParamList = {
   dashboard: undefined;
@@ -50,6 +52,8 @@ export type DrawerParamList = {
   settings: undefined;
   roles: undefined;
   uploads: undefined;
+  uom: undefined;
+  banner: undefined;
   CreateBill: { billId?: string } | undefined;
   PDFViewer: { invoiceNumber?: string; orderNumber?: string; type?: 'invoice' | 'order' };
 };
@@ -227,6 +231,8 @@ const Drawer = (props: any) => {
       <Draw.Screen name="settings" component={SettingsScreen} />
       <Draw.Screen name="roles" component={RoleScreen} />
       <Draw.Screen name="uploads" component={UploadScreen} />
+      <Draw.Screen name="uom" component={UomScreen} />
+      <Draw.Screen name="banner" component={BannerScreen} />
       <Draw.Screen name="CreateBill" component={CreateBillScreen} />
       <Draw.Screen name="PDFViewer" component={PDFViewer} />
     </Draw.Navigator>

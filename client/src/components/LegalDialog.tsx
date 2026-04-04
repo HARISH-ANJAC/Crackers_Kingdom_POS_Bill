@@ -1,6 +1,12 @@
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, ShieldCheck, AlertTriangle } from "lucide-react";
+﻿import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, ShieldCheck, Phone } from "lucide-react";
 
 interface LegalDialogProps {
   isOpen: boolean;
@@ -9,81 +15,90 @@ interface LegalDialogProps {
 }
 
 const LegalDialog: React.FC<LegalDialogProps> = ({ isOpen, onClose, onAccept }) => {
+  const handleOpenChange = (open: boolean) => {
+    if (!open) onClose();
+  };
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[460px] p-0 gap-0 rounded-xl border border-border bg-card shadow-2xl overflow-hidden">
+        {/* Header Banner */}
+        <div className="bg-destructive/10 border-b border-destructive/20 px-6 py-4 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-destructive shrink-0" />
+          <div>
+            <DialogTitle className="text-base font-bold text-destructive leading-tight">
+              Important Legal Notice
+            </DialogTitle>
+            <p className="text-[11px] text-destructive/70 mt-0.5">
+              As per Hon&apos;ble Supreme Court &amp; Explosives Act
+            </p>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="px-6 py-5 space-y-5">
+          <div className="flex gap-3">
+            <span className="mt-1 w-2 h-2 rounded-full bg-destructive shrink-0" />
+            <p className="text-sm text-foreground leading-relaxed">
+              <span className="font-bold text-destructive">
+                Online sale of firecrackers is strictly prohibited
+              </span>{" "}
+              in India as per Supreme Court directives.
+            </p>
+          </div>
+
+          <div className="flex gap-3">
+            <span className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
+            <p className="text-sm text-foreground leading-relaxed">
+              This website is for{" "}
+              <span className="font-semibold underline">enquiry &amp; price estimation only</span>.
+              Please review your selected products and proceed to submit your estimate request.
+            </p>
+          </div>
+
+          <div className="flex gap-3">
+            <span className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
+            <p className="text-sm text-foreground leading-relaxed">
+              After submission, our team will contact you within{" "}
+              <span className="font-semibold">2 hours</span> to confirm item availability,
+              pricing, and delivery details under legal compliance.
+            </p>
+          </div>
+
+          <div className="border-t border-border/50 pt-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="w-4 h-4 text-green-500 shrink-0" />
+              <span>Licensed and authorized seller, dispatched via registered transport (Sivakasi)</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Phone className="w-4 h-4 text-primary shrink-0" />
+              <span>
+                We respond to all enquiries within{" "}
+                <span className="font-semibold text-foreground">2 hours</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <DialogFooter className="px-6 py-5 border-t border-border/40 flex flex-col-reverse sm:flex-row sm:justify-end gap-3 bg-muted/10">
+          <Button
+            variant="outline"
             onClick={onClose}
-            className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
-          />
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="fixed inset-0 z-[111] m-auto max-w-2xl w-full h-fit bg-card rounded-4xl shadow-2xl overflow-hidden border border-border flex flex-col"
+            className="h-11 rounded-xl px-7 font-bold text-xs uppercase tracking-widest border border-border/60 bg-background/50 backdrop-blur-sm hover:bg-secondary/40 hover:border-border/80 text-foreground/70 hover:text-foreground transition-all duration-300 active:scale-[0.98] ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            {/* Header */}
-            <div className="bg-festive-ruby p-6 text-white flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="w-8 h-8" />
-                <div>
-                  <h3 className="text-lg md:text-xl font-black uppercase tracking-widest italic">Legal Disclaimer</h3>
-                  <p className="text-[10px] text-white/70 font-bold uppercase tracking-widest leading-none">Compliance & Safety</p>
-                </div>
-              </div>
-              <button 
-                onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-xl transition-colors"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            {/* Content */}
-            <div className="p-8 md:p-10 space-y-6">
-              <div className="flex items-start gap-4 p-4 bg-secondary/50 rounded-2xl border border-border">
-                <AlertTriangle className="w-6 h-6 text-festive-ruby shrink-0 mt-1" />
-                <p className="text-sm md:text-base text-foreground/80 leading-relaxed font-medium">
-                  As per the <span className="font-black text-festive-ruby">Supreme Court directive (2018)</span>, the online sale of firecrackers is strictly prohibited. Customers may browse and select products on our website for estimation purposes only. 
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-sm md:text-base text-foreground/80 leading-relaxed">
-                  After selecting the required items, please submit your request using the <span className="font-bold underline decoration-primary decoration-2 underline-offset-4">“Get Estimate”</span> option. Our team will contact you within 2 hours to confirm the details.
-                </p>
-
-                <div className="h-px bg-border/50 w-full" />
-
-                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed italic">
-                  Crackers Kingdom operates in full compliance with all legal regulations under License: <span className="font-bold text-foreground">RSK AGENCIES (No: X/20XX)</span>. All orders are dispatched through authorized and registered transport services, following the standard legal procedures practiced in Sivakasi.
-                </p>
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className="p-8 pt-0 flex flex-col md:flex-row gap-4">
-              <button
-                onClick={onClose}
-                className="flex-1 px-8 py-4 rounded-2xl border-2 border-border text-muted-foreground font-black text-xs uppercase tracking-widest hover:bg-secondary transition-all"
-              >
-                I Decline
-              </button>
-              <button
-                onClick={onAccept}
-                className="flex-1 px-8 py-4 rounded-2xl bg-festive-green text-white font-black text-xs uppercase tracking-widest hover:bg-festive-green/90 shadow-xl shadow-festive-green/20 transition-all hover:scale-[1.02] active:scale-95"
-              >
-                I Understand & Accept
-              </button>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+            I Decline
+          </Button>
+          <Button
+            onClick={onAccept}
+            className="h-11 rounded-xl px-8 font-bold text-xs uppercase tracking-widest bg-linear-to-r from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 border border-primary/20 hover:from-primary/95 hover:to-primary hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 active:scale-[0.97] ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative overflow-hidden group"
+          >
+            <span className="relative z-10">I Understand &amp; Continue</span>
+            <div className="absolute inset-0 h-full w-full bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] skew-x-30 transition-transform duration-700 group-hover:translate-x-[150%]" />
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

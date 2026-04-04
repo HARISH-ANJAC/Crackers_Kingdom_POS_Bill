@@ -6,12 +6,13 @@ import fs from "fs";
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { categoryId, name, slug, rank, mrp, sellingPrice, isActive, quantity, tags: tagsJson } = req.body;
+    const { categoryId, uomId, name, slug, rank, mrp, sellingPrice, isActive, quantity, tags: tagsJson } = req.body;
     const image = req.file ? req.file.path : null;
 
     const newProduct = await db.transaction(async (tx) => {
       const inserted = await tx.insert(products).values({
         categoryId,
+        uomId,
         name,
         slug,
         image,
@@ -62,7 +63,8 @@ export const getAllProducts = async (req: Request, res: Response) => {
     const allProducts = await db.query.products.findMany({
       with: {
         stock: true,
-        productTags: true
+        productTags: true,
+        uom: true,
       },
       orderBy: [desc(products.createdAt)],
     });
@@ -87,7 +89,8 @@ export const getProductById = async (req: Request, res: Response) => {
       where: eq(products.id, id as any),
       with: {
         stock: true,
-        productTags: true
+        productTags: true,
+        uom: true,
       }
     });
     
@@ -111,7 +114,7 @@ export const getProductById = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { categoryId, name, slug, rank, mrp, sellingPrice, isActive, tags: tagsJson } = req.body;
+    const { categoryId, uomId, name, slug, rank, mrp, sellingPrice, isActive, tags: tagsJson } = req.body;
     
     // Check if product exists
     const existingProductArr = await db.select().from(products).where(eq(products.id, id as any));
@@ -134,6 +137,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       const updated = await tx.update(products)
         .set({
           categoryId,
+          uomId,
           name,
           slug,
           image,

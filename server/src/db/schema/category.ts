@@ -14,6 +14,55 @@ import {
 } from "drizzle-orm/pg-core";
 
 /* =========================
+   BANNERS (HERO CAROUSEL)
+========================= */
+
+export const banners = pgTable(
+  "banners",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: text("title").notNull(), // Supports multiline with '\n'
+    description: text("description"),
+    badge: varchar("badge", { length: 255 }),
+    badgeIcon: varchar("badge_icon", { length: 50 }), // Lucide icon name (e.g., 'Sparkles')
+    
+    image: text("image").notNull(),
+    ctaText: varchar("cta_text", { length: 100 }).default("Get My Estimate"),
+    ctaLink: varchar("cta_link", { length: 255 }).default("/products"),
+    
+    rank: integer("display_order").default(0).notNull(),
+    isActive: boolean("status").default(true).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    rankIdx: index("banners_display_order_idx").on(table.rank),
+  })
+);
+
+/* =========================
+   UOM (UNIT OF MEASURE)
+========================= */
+
+export const uoms = pgTable(
+  "uoms",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name", { length: 50 }).notNull(),
+    code: varchar("code", { length: 20 }).notNull(),
+    description: text("description"),
+    isActive: boolean("status").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    codeUnique: unique().on(table.code),
+    nameUnique: unique().on(table.name),
+  })
+);
+
+/* =========================
    CATEGORIES
 ========================= */
 
@@ -48,6 +97,10 @@ export const products = pgTable(
       .notNull()
       .references(() => categories.id, { onDelete: "restrict", onUpdate: "cascade" }),
 
+    uomId: uuid("uom_id")
+      .notNull()
+      .references(() => uoms.id, { onDelete: "restrict", onUpdate: "cascade" }),
+
     name: varchar("name", { length: 200 }).notNull(),
     slug: varchar("slug", { length: 220 }).notNull(),
     image: text("image"),
@@ -56,6 +109,7 @@ export const products = pgTable(
     rank: integer("display_order").default(0).notNull(),
     mrp: numeric("mrp", { precision: 10, scale: 2 }).notNull(),
     sellingPrice: numeric("selling_price", { precision: 10, scale: 2 }).notNull(),
+    conversionQty: integer("conversion_qty").default(1).notNull(),
     isActive: boolean("status").default(true).notNull(),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -101,6 +155,10 @@ export const tags = pgTable(
     name: varchar("name", { length: 80 }).notNull(),
     slug: varchar("slug", { length: 100 }).notNull().unique(),
     color: varchar("color", { length: 7 }),
+
+    rank: integer("display_order").default(0).notNull(),
+    showLimit: integer("show_limit").default(0).notNull(),
+
     isActive: boolean("status").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -108,6 +166,7 @@ export const tags = pgTable(
   (table) => ({
     nameUnique: unique().on(table.name),
     slugIdx: index("tags_slug_idx").on(table.slug),
+    rankIdx: index("tags_display_order_idx").on(table.rank),
   })
 );
 
@@ -162,10 +221,18 @@ export const categoriesRelations = relations(categories, ({ many }) => ({
   products: many(products),
 }));
 
+export const uomsRelations = relations(uoms, ({ many }) => ({
+  products: many(products),
+}));
+
 export const productsRelations = relations(products, ({ one, many }) => ({
   category: one(categories, {
     fields: [products.categoryId],
     references: [categories.id],
+  }),
+  uom: one(uoms, {
+    fields: [products.uomId],
+    references: [uoms.id],
   }),
   stock: one(productStocks, {
     fields: [products.id],

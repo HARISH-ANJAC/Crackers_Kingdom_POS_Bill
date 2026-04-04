@@ -12,6 +12,8 @@ import orderReducer from './Slice/OrderSlice';
 import customerReducer from './Slice/CustomerSlice';
 import tagReducer from './Slice/TagSlice';
 import dashboardReducer from './Slice/DashboardSlice';
+import uomReducer from './Slice/UomSlice';
+import bannerReducer from './Slice/BannerSlice';
 
 
 
@@ -28,6 +30,8 @@ export const Store = configureStore({
     customers: customerReducer,
     tags: tagReducer,
     dashboard: dashboardReducer,
+    uoms: uomReducer,
+    banners: bannerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

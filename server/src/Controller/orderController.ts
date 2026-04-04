@@ -9,9 +9,58 @@ import chromium from '@sparticuz/chromium';
 import QRCode from 'qrcode';
 import { generateOrderHTML } from '../utils/invoiceTemplates/orderTemplate.js';
 import { pdfCache, PDF_CACHE_TTL } from '../utils/pdfCache.js';
+import { transporter } from '../utils/mailer.js';
+import { OrderReceivedTemplate } from '../utils/emailTemplates/orderReceived.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+// ─── Reusable PDF Generator ───────────────────────────────────────────────────
+async function generateOrderPDFBuffer(orderData: any, shopInfo: any): Promise<Buffer> {
+    const encryptedOrderNumber = Buffer.from(orderData.orderNumber).toString('hex');
+    const qrCodeDataUrl = await QRCode.toDataURL(
+        `${process.env.BASE_URL}/api/orders/pdf/${encryptedOrderNumber}`
+    );
+    const html = generateOrderHTML(orderData, qrCodeDataUrl, shopInfo);
+
+    const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
+    let browser;
+
+    if (isProduction) {
+        browser = await puppeteerCore.launch({
+            args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
+            executablePath: await chromium.executablePath(),
+            headless: true,
+        });
+    } else {
+        browser = await puppeteer.launch({
+            headless: true,
+            pipe: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+        });
+    }
+
+    try {
+        const page = await browser.newPage();
+        await page.setContent(html, { waitUntil: 'load', timeout: 30000 });
+        const pdfBuffer = await page.pdf({
+            format: 'A4',
+            printBackground: true,
+            margin: { top: '0px', right: '0px', bottom: '0px', left: '0px' },
+        });
+
+        // Warm the cache
+        pdfCache.set(orderData.orderNumber, {
+            buffer: Buffer.from(pdfBuffer),
+            timestamp: Date.now(),
+        });
+
+        return Buffer.from(pdfBuffer);
+    } finally {
+        await browser.close();
+    }
+}
+// ──────────────────────────────────────────────────────────────────────────────
 
 export const createOrder = async (req: Request, res: Response) => {
     try {
@@ -72,8 +121,9 @@ export const createOrder = async (req: Request, res: Response) => {
             const itemsToInsert = items.map((item: any) => ({
                 orderId: newOrder.id,
                 productId: item.productId,
-                productName: item.productName, // New
-                productImage: item.productImage || item.image, // New
+                productName: item.productName,
+                productContent: item.productContent,
+                productImage: item.productImage || item.image,
                 quantity: parseInt(String(item.quantity || 0)),
                 unitPrice: String(item.unitPrice || 0),
                 totalPrice: String(item.totalPrice || 0),
@@ -83,6 +133,77 @@ export const createOrder = async (req: Request, res: Response) => {
         }
 
         res.status(201).json({ success: true, order: newOrder });
+
+
+        // ── Send Order Confirmation Email with PDF Attachment (fire-and-forget) ──
+        const customerEmail = customerData.email?.trim();
+        if (customerEmail) {
+            (async () => {
+                try {
+                    const orderDate = new Date().toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+
+                    // Parallelize data fetching and QR generation
+                    const [fullOrderData, shopSettings, qrCodeDataUrl] = await Promise.all([
+                        db.query.orders.findFirst({
+                            where: eq(orders.orderNumber, orderNumber),
+                            with: {
+                                customer: true,
+                                items: { with: { product: { with: { uom: true } } } },
+                            },
+                        }),
+                        db.select().from(settings).limit(1),
+                        QRCode.toDataURL(`${process.env.BASE_URL}/api/orders/pdf/${Buffer.from(orderNumber).toString('hex')}`)
+                    ]);
+
+                    const shopInfo = shopSettings?.[0] || {
+                        shopName: "Crackers Kingdom",
+                        shopPhone: "9944336113",
+                        shopAddress: "M/S NANDHINI TRADERS,SURVEY NO: 299/13A1C, 299/15A2, DOOR NO: 3/1362/20, BHARATHI NAGAR - II VISWANATHAM, SIVAKASI, VIRUDHUNAGAR",
+                        shopGst: "",
+                    };
+
+                    if (!fullOrderData) throw new Error("Order not found for background process");
+
+                    // Generate PDF buffer
+                    const pdfBuffer = await generateOrderPDFBuffer(fullOrderData, shopInfo);
+
+                    const emailHtml = OrderReceivedTemplate({
+                        orderNumber,
+                        orderDate,
+                        customerPhone: String(customerData.phone),
+                        customerEmail,
+                        subtotal: `₹${Number(subTotal || 0).toLocaleString("en-IN")}`,
+                        total: `₹${Number(totalAmount || 0).toLocaleString("en-IN")}`,
+                        items: (fullOrderData?.items || []).map((item: any) => ({
+                            productName: item.productName || item.product?.name || "Product",
+                            content: item.productContent || (item.product?.uom?.code ? `1${item.product.uom.code}` : ""),
+                            quantity: Number(item.quantity || 0),
+                            unitPrice: Number(item.unitPrice || 0),
+                            totalPrice: Number(item.totalPrice || 0),
+                        })),
+                    });
+
+                    await transporter.sendMail({
+                        from: `"Crackers Kingdom" <${process.env.SMTP_USER}>`,
+                        to: customerEmail,
+                        subject: `Order Enquiry Received — ${orderNumber} | Crackers Kingdom`,
+                        html: emailHtml,
+                        attachments: [
+                            {
+                                filename: `order-${orderNumber}.pdf`,
+                                content: pdfBuffer,
+                                contentType: 'application/pdf',
+                            },
+                        ],
+                    });
+
+                    console.log(`[Email] Order PDF attached and sent to ${customerEmail} for ${orderNumber}`);
+                } catch (err: any) {
+                    console.error("[Email] Failed to send order confirmation with PDF:", err.message);
+                }
+            })();
+        }
+
     } catch (error: any) {
         console.error("Create Order Error:", error);
         res.status(500).json({ success: false, message: error.message });
@@ -125,7 +246,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
                 customer: true,
                 items: {
                     with: {
-                        product: true
+                        product: { with: { uom: true } }
                     }
                 },
             },
@@ -164,7 +285,7 @@ export const convertOrderToInvoice = async (req: Request, res: Response) => {
             with: {
                 items: {
                     with: {
-                        product: true
+                        product: { with: { uom: true } }
                     }
                 },
             }
@@ -213,8 +334,9 @@ export const convertOrderToInvoice = async (req: Request, res: Response) => {
             const invItems = order.items.map((item: any) => ({
                 invoiceId: newInvoice.id,
                 productId: item.productId,
-                productName: item.productName || item.product?.name, // Use stored or joined
-                productImage: item.productImage || item.product?.image, // Use stored or joined
+                productName: item.productName || item.product?.name,
+                productContent: item.productContent || item.product?.content,
+                productImage: item.productImage || item.product?.image,
                 quantity: item.quantity,
                 unitPrice: item.unitPrice,
                 totalPrice: item.totalPrice,
@@ -268,7 +390,7 @@ export const getOrderPDF = async (req: Request, res: Response) => {
                 customer: true,
                 items: {
                     with: {
-                        product: true
+                        product: { with: { uom: true } }
                     }
                 },
             },
@@ -280,9 +402,9 @@ export const getOrderPDF = async (req: Request, res: Response) => {
 
         const shopSettings = await db.select().from(settings).limit(1);
         const shopInfo = shopSettings[0] || {
-            shopName: "PRABHU CRACKERS",
+            shopName: "Crackers Kingdom",
             shopPhone: "9944336113",
-            shopAddress: "Main Road, Sivakasi, Tamil Nadu",
+            shopAddress: "M/S NANDHINI TRADERS, SURVEY NO: 299/13A1C, 299/15A2, DOOR NO: 3/1362/20, BHARATHI NAGAR - II VISWANATHAM, SIVAKASI, VIRUDHUNAGAR",
             shopGst: ""
         };
 

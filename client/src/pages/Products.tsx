@@ -1,19 +1,23 @@
 import React, { useState, useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/Store";
+import { setQuantity, updateQuantity } from "@/redux/Slice/CartSlice";
+import { Product } from "@/types/product";
+import { API_BASE_URL } from "@/services/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search as SearchIcon,
   ChevronDown,
   X,
   Loader2,
-  ShoppingCart,
-  ArrowRight,
-  Sparkles,
   List,
   Table as TableIcon,
   Plus,
   Minus,
   Send,
+  ServerCrash,
+  RefreshCw,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import PageHeader from "@/components/PageHeader";
@@ -21,85 +25,13 @@ import SEO from "@/components/SEO";
 import LegalDialog from "@/components/LegalDialog";
 import headerBg from "@/assets/header_estimate_bg.png";
 import heroBanner from "@/assets/hero-banner.jpg";
-import sparklers from "@/assets/sparklers.jpg";
-import flowerPots from "@/assets/flower-pots.jpg";
-import chakkars from "@/assets/chakkars.jpg";
 import rockets from "@/assets/rockets.jpg";
-import repeatingShots from "@/assets/repeating-shots.jpg";
-import bombs from "@/assets/bombs.jpg";
-
-// -- Types --------------------------------------------------------------
-interface Product {
-  id: string;
-  name: string;
-  content: string;
-  price: number;
-  discPrice: number;
-  img: string;
-}
-
-interface Category {
-  name: string;
-  products: Product[];
-}
+import { useProducts } from "@/hooks/useProducts";
 
 // -- Helpers ------------------------------------------------------------
 const MIN_ORDER_AMOUNT = 3000;
 const formatCurrency = (n: number) =>
-  `?${n.toLocaleString("en-IN")}`;
-
-// -- Data ---------------------------------------------------------------
-const categories: Category[] = [
-  {
-    name: "CHAKKARS",
-    products: [
-      { id: "chk-1", name: "Ground Chakra Big", content: "10PCS", price: 150, discPrice: 75, img: chakkars },
-      { id: "chk-2", name: "Ground Chakra Special", content: "10PCS", price: 200, discPrice: 100, img: chakkars },
-      { id: "chk-3", name: "Ground Chakra Deluxe", content: "10PCS", price: 250, discPrice: 125, img: chakkars },
-    ],
-  },
-  {
-    name: "FLOWER POTS",
-    products: [
-      { id: "fp-1", name: "Flower Pots Small", content: "10PCS", price: 120, discPrice: 60, img: flowerPots },
-      { id: "fp-2", name: "Flower Pots Big", content: "10PCS", price: 200, discPrice: 100, img: flowerPots },
-      { id: "fp-3", name: "Flower Pots Special", content: "10PCS", price: 300, discPrice: 150, img: flowerPots },
-      { id: "fp-4", name: "Flower Pots Ashoka", content: "10PCS", price: 600, discPrice: 300, img: flowerPots },
-    ],
-  },
-  {
-    name: "SPARKLERS",
-    products: [
-      { id: "sp-1", name: "7cm Color Sparklers", content: "1BUNDLE", price: 60, discPrice: 30, img: sparklers },
-      { id: "sp-2", name: "10cm Color Sparklers", content: "1BUNDLE", price: 80, discPrice: 40, img: sparklers },
-      { id: "sp-3", name: "15cm Color Sparklers", content: "1BUNDLE", price: 120, discPrice: 60, img: sparklers },
-      { id: "sp-4", name: "30cm Color Sparklers", content: "1BUNDLE", price: 200, discPrice: 100, img: sparklers },
-    ],
-  },
-  {
-    name: "ROCKETS",
-    products: [
-      { id: "rk-1", name: "Baby Rocket", content: "10PCS", price: 100, discPrice: 50, img: rockets },
-      { id: "rk-2", name: "Rocket Bombs", content: "10PCS", price: 180, discPrice: 90, img: rockets },
-    ],
-  },
-  {
-    name: "REPEATING SHOTS",
-    products: [
-      { id: "rs-1", name: "12 Shot Multi Color", content: "1PCS", price: 400, discPrice: 200, img: repeatingShots },
-      { id: "rs-2", name: "25 Shot Multi Color", content: "1PCS", price: 800, discPrice: 400, img: repeatingShots },
-      { id: "rs-3", name: "50 Shot Multi Color", content: "1PCS", price: 1500, discPrice: 750, img: repeatingShots },
-    ],
-  },
-  {
-    name: "BOMBS",
-    products: [
-      { id: "bm-1", name: "Classic Laxmi Bomb", content: "10PCS", price: 50, discPrice: 25, img: bombs },
-      { id: "bm-2", name: "Classic Bullet Bomb", content: "10PCS", price: 80, discPrice: 40, img: bombs },
-      { id: "bm-3", name: "Classic King Size Bomb", content: "1PCS", price: 50, discPrice: 25, img: bombs },
-    ],
-  },
-];
+  `₹${n.toLocaleString("en-IN")}`;
 
 const productsStructuredData = {
   "@context": "https://schema.org",
@@ -110,23 +42,39 @@ const productsStructuredData = {
   url: "https://crackerskingdom.in/products",
   inLanguage: "en-IN",
 };
+
 // -- Component ----------------------------------------------------------
 const Products = () => {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   const [isLegalOpen, setIsLegalOpen] = useState(false);
 
-  // Static data — no async fetch needed
-  const isLoading = false;
+  const dispatch = useAppDispatch();
 
-  const handleQuantityChange = (id: string, value: string) => {
+  // Quantities remain in Redux as part of the Global UI State (Cart)
+  const quantities = useAppSelector((state) => state.cart.quantities);
+
+  // TanStack Query hook handles fetching, caching, and Redux sync
+  // It returns data (cached/synced) immediately for "Very Quick Render"
+  const { categories, isLoading, error } = useProducts();
+
+  const getImageUrl = (img?: string) => {
+    if (!img) return rockets;
+    if (img.startsWith("http")) return img;
+    return `${API_BASE_URL}/${img.replace(/\\/g, '/')}`;
+  };
+
+  const handleQuantityInput = (id: string, value: string) => {
     const num = Math.max(0, parseInt(value) || 0);
-    setQuantities((prev) => ({ ...prev, [id]: num }));
+    dispatch(setQuantity({ id, num }));
+  };
+
+  const handleUpdateQty = (id: string, delta: number) => {
+    dispatch(updateQuantity({ id, delta }));
   };
 
   const totals = useMemo(() => {
@@ -145,7 +93,8 @@ const Products = () => {
       })
     );
     return { totalItems, totalAmount, items };
-  }, [quantities]);
+  }, [quantities, categories]);
+
   const isBelowMinimumOrder = totals.totalAmount < MIN_ORDER_AMOUNT;
   const shortfallAmount = Math.max(0, MIN_ORDER_AMOUNT - totals.totalAmount);
 
@@ -159,14 +108,7 @@ const Products = () => {
         )
       }))
       .filter(category => category.products.length > 0);
-  }, [searchQuery, selectedCategory]);
-
-  const handleUpdateQty = (id: string, delta: number) => {
-    setQuantities(prev => ({
-      ...prev,
-      [id]: Math.max(0, (prev[id] || 0) + delta)
-    }));
-  };
+  }, [searchQuery, selectedCategory, categories]);
 
   // Show legal dialog before checkout
   const handleNext = () => {
@@ -187,21 +129,12 @@ const Products = () => {
       return;
     }
     setIsLegalOpen(false);
+
     // Generate summary for checkout page
     const selectedItems = categories.flatMap(cat =>
       cat.products.filter(p => (quantities[p.id] || 0) > 0)
         .map(p => ({ ...p, qty: quantities[p.id] }))
     );
-
-    if (selectedItems.length > 0) {
-      const summary = {
-        items: selectedItems.map(i => `${i.name} x ${i.qty} (${formatCurrency(i.qty * i.discPrice)})`).join("\n"),
-        total: totals.totalAmount,
-        count: totals.totalItems,
-        timestamp: new Date().toISOString()
-      };
-      localStorage.setItem("last_estimate", JSON.stringify(summary));
-    }
 
     navigate("/checkout", {
       state: {
@@ -216,15 +149,8 @@ const Products = () => {
     });
   };
 
-  // -- Empty-state check ---------------------------------------------
-  const isAllEmpty = categories.every((cat) => {
-    if (selectedCategory !== "All" && cat.name !== selectedCategory) return true;
-    return (
-      cat.products.filter((p) =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ).length === 0
-    );
-  });
+  // Rendering Loader only if categories are truly empty and loading
+  const shouldShowLoader = isLoading && categories.length === 0;
 
   return (
     <div>
@@ -276,9 +202,9 @@ const Products = () => {
             </div>
           </motion.div>
         </div>
+
         {/* -- Search + View Switcher -- */}
         <div className="container-narrow px-4 mt-10 flex flex-col md:flex-row gap-6">
-          {/* Search */}
           <div className="relative group flex-1">
             <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5 group-focus-within:text-primary transition-colors" />
             <input
@@ -299,7 +225,6 @@ const Products = () => {
           </div>
 
           <div className="flex gap-2">
-            {/* View Switcher */}
             <div className="bg-card border border-border rounded-2xl p-1 flex shadow-sm">
               <button
                 onClick={() => setViewMode('table')}
@@ -317,7 +242,6 @@ const Products = () => {
               </button>
             </div>
 
-            {/* Category Dropdown (Only in Table Mode) */}
             {viewMode === 'table' && (
               <div className="relative sm:min-w-[220px] group">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -343,13 +267,129 @@ const Products = () => {
           </div>
         </div>
 
-        {viewMode === 'table' ? (
+        {shouldShowLoader ? (
+          <div className="container-narrow px-4 mt-10 pb-20 min-h-[600px]">
+            {viewMode === 'table' ? (
+              /* Table View Skeleton */
+              <div className="bg-card md:rounded-3xl shadow-xl overflow-hidden border border-border/60">
+                <div className="bg-footer p-5 hidden md:block">
+                  <div className="flex gap-4">
+                    {[...Array(8)].map((_, i) => (
+                      <Skeleton key={i} className="h-4 flex-1 bg-primary/20" />
+                    ))}
+                  </div>
+                </div>
+                <div className="divide-y divide-border/30">
+                  {[...Array(10)].map((_, i) => (
+                    <div key={i} className="flex items-center gap-4 px-4 py-4 md:py-6">
+                      <Skeleton className="w-8 h-4 shrink-0 bg-muted" />
+                      <Skeleton className="w-10 h-10 md:w-14 md:h-14 rounded-lg bg-secondary shrink-0" />
+                      <div className="grow space-y-2">
+                        <Skeleton className="h-4 w-3/4 bg-muted" />
+                        <Skeleton className="h-3 w-1/4 bg-muted/60 md:hidden" />
+                      </div>
+                      <Skeleton className="w-20 h-4 bg-muted hidden md:block" />
+                      <Skeleton className="w-16 h-4 bg-muted" />
+                      <Skeleton className="w-16 h-4 bg-primary/10" />
+                      <Skeleton className="w-12 h-8 rounded bg-muted" />
+                      <Skeleton className="w-16 h-4 bg-muted" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* Card View Skeleton */
+              <div className="space-y-6">
+                <div className="bg-card rounded-3xl shadow-xl border border-border p-5 mb-8">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="grow max-w-72">
+                      <Skeleton className="h-3 w-24 mb-2 bg-muted-foreground/20" />
+                      <Skeleton className="h-10 w-full rounded-xl bg-muted" />
+                    </div>
+                    <div className="hidden sm:block text-right space-y-2">
+                      <Skeleton className="h-2 w-16 ml-auto bg-muted-foreground/20" />
+                      <Skeleton className="h-4 w-32 ml-auto bg-primary/20" />
+                    </div>
+                  </div>
+                </div>
+
+                {[...Array(3)].map((_, sectionIdx) => (
+                  <div key={sectionIdx} className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                    <div className="bg-primary/10 px-6 py-4">
+                      <Skeleton className="h-5 w-40 bg-primary/20 rounded-lg" />
+                    </div>
+                    <div className="divide-y divide-border/30">
+                      {[...Array(3)].map((_, itemIdx) => (
+                        <div key={itemIdx} className="p-4 md:p-6 flex items-center gap-4">
+                          <Skeleton className="w-20 h-20 md:w-28 md:h-28 rounded-2xl shrink-0 bg-secondary" />
+                          <div className="grow space-y-3">
+                            <Skeleton className="h-6 w-1/2 rounded-lg bg-muted" />
+                            <Skeleton className="h-4 w-1/4 rounded-lg bg-muted/60" />
+                            <div className="flex items-center gap-3">
+                              <Skeleton className="h-7 w-24 bg-primary/10 rounded-lg" />
+                              <Skeleton className="h-4 w-16 bg-muted rounded-full" />
+                            </div>
+                          </div>
+                          <Skeleton className="w-24 h-10 rounded-2xl bg-muted" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : error && categories.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="container-narrow px-4 mt-16 max-w-2xl mx-auto"
+          >
+            <div className="bg-card/40 backdrop-blur-3xl rounded-[2.5rem] p-10 md:p-16 border border-border/60 shadow-[0_30px_100px_-15px_rgba(255,50,50,0.1)] relative overflow-hidden group text-center">
+              <div className="absolute inset-0 bg-linear-to-b from-festive-ruby/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+
+              <div className="relative z-10 flex flex-col items-center">
+                <motion.div
+                  animate={{
+                    rotate: [0, -5, 5, -5, 0],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                  className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-festive-ruby/10 flex items-center justify-center mb-8 relative"
+                >
+                  <div className="absolute inset-0 rounded-full border-2 border-festive-ruby/20 animate-ping" />
+                  <ServerCrash className="w-12 h-12 md:w-14 md:h-14 text-festive-ruby" strokeWidth={1.5} />
+                </motion.div>
+
+                <h2 className="text-2xl md:text-3xl font-display font-black uppercase text-foreground mb-4 tracking-tight">
+                  Server Unreachable
+                </h2>
+
+                <p className="text-muted-foreground text-sm md:text-base font-medium mb-8 max-w-md mx-auto leading-relaxed">
+                  We're having trouble connecting to the Crackers Kingdom secure servers. Our systems might be experiencing heavy traffic.
+                </p>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => window.location.reload()}
+                  className="flex items-center gap-3 px-8 py-4 bg-foreground text-background rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:shadow-2xl transition-all"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Attempt Reconnect
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        ) : viewMode === 'table' ? (
           <>
             {/* -- Order Table -- */}
             <div className="max-w-full container-narrow px-0 md:px-4 mt-10 pb-12 w-full overflow-hidden">
               <div className="bg-card md:rounded-3xl shadow-2xl overflow-hidden border border-border/60">
                 <table className="w-full text-left border-collapse table-auto">
-                  {/* Table Head */}
                   <thead className="bg-footer text-primary uppercase text-[8px] md:text-sm font-bold sticky top-0 z-20">
                     <tr>
                       <th className="px-0.5 md:px-4 py-3 md:py-5 text-right w-6 min-w-[24px]">SNo</th>
@@ -391,10 +431,10 @@ const Products = () => {
                                 <motion.div
                                   whileHover={{ scale: 1.15 }}
                                   whileTap={{ scale: 0.95 }}
-                                  onClick={() => setSelectedImage({ url: product.img, name: product.name })}
+                                  onClick={() => setSelectedImage({ url: getImageUrl(product.img), name: product.name })}
                                   className="w-6 h-6 md:w-14 md:h-14 rounded md:rounded-lg overflow-hidden border border-border/50 shadow-sm bg-secondary cursor-pointer"
                                 >
-                                  <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
+                                  <img src={getImageUrl(product.img)} alt={product.name} loading="lazy" className="w-full h-full object-cover" />
                                 </motion.div>
                               </td>
                               <td className="px-0.5 md:px-4 py-3 md:py-4 font-bold text-foreground text-[9px] md:text-sm min-w-[65px] wrap-break-word leading-tight whitespace-normal">
@@ -412,7 +452,7 @@ const Products = () => {
                                   min="0"
                                   placeholder="0"
                                   value={quantities[product.id] || ""}
-                                  onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                                  onChange={(e) => handleQuantityInput(product.id, e.target.value)}
                                   className="w-10 md:w-20 px-0 py-1 md:py-1.5 rounded border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary text-center text-[10px] md:text-sm font-black bg-card outline-none"
                                 />
                               </td>
@@ -426,204 +466,130 @@ const Products = () => {
                 </table>
               </div>
             </div>
-
           </>
         ) : (
-          /* CARD/LIST VIEW (User Design) */
+          /* CARD/LIST VIEW */
           <div className="container-narrow w-full px-4 mt-10 pb-12">
-            <div>
-              {/* Category Filter Group */}
-              <div className="bg-card rounded-3xl shadow-xl border border-border p-5 mb-8 sticky top-24 z-30 transition-shadow duration-300 hover:shadow-2xl">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex flex-col">
-                    <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest pl-1 mb-1">Select Category</h3>
-                    {/* Category Dropdown */}
-                    <div className="relative w-full md:w-72 group">
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <div className="p-1 px-2 border border-primary/20 bg-primary/5 rounded-lg">
-                          <List className="w-3 h-3 text-primary" />
-                        </div>
-                      </div>
-                      <select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="w-full appearance-none pl-12 pr-10 py-3 rounded-xl border border-border focus:ring-4 focus:ring-primary/10 focus:border-primary/40 transition-all outline-none shadow-sm font-black text-foreground bg-card cursor-pointer uppercase tracking-widest text-[10px]"
-                      >
-                        <option value="All">All Categories</option>
-                        {categories.map((cat) => (
-                          <option key={cat.name} value={cat.name}>{cat.name}</option>
-                        ))}
-                      </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground group-hover:text-primary transition-colors">
-                        <ChevronDown size={18} />
+            <div className="bg-card rounded-3xl shadow-xl border border-border p-5 mb-8 sticky top-24 z-30 transition-shadow duration-300 hover:shadow-2xl">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col">
+                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest pl-1 mb-1">Select Category</h3>
+                  <div className="relative w-full md:w-72 group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <div className="p-1 px-2 border border-primary/20 bg-primary/5 rounded-lg">
+                        <List className="w-3 h-3 text-primary" />
                       </div>
                     </div>
-                  </div>
-
-                  <div className="hidden sm:block text-right">
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] italic">Browsing</p>
-                    <p className="text-xs font-black text-primary uppercase tracking-tighter">{selectedCategory === "All" ? "Every Product" : selectedCategory}</p>
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="w-full appearance-none pl-12 pr-10 py-3 rounded-xl border border-border focus:ring-4 focus:ring-primary/10 focus:border-primary/40 transition-all outline-none shadow-sm font-black text-foreground bg-card cursor-pointer uppercase tracking-widest text-[10px]"
+                    >
+                      <option value="All">All Categories</option>
+                      {categories.map((cat) => (
+                        <option key={cat.name} value={cat.name}>{cat.name}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground group-hover:text-primary transition-colors">
+                      <ChevronDown size={18} />
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Product List */}
-              <div className="space-y-6">
-                {filteredCategories.length > 0 ? (
-                  filteredCategories.map(category => (
-                    <div key={category.name} className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
-                      <div className="bg-primary px-6 py-3">
-                        <h2 className="text-white font-black text-xs md:text-sm uppercase tracking-[0.2em] flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
-                          {category.name}
-                        </h2>
-                      </div>
-                      <div className="divide-y divide-border/30">
-                        {category.products.map(product => {
-                          const qty = quantities[product.id] || 0;
-                          return (
-                            <div key={product.id} className="p-4 md:p-6 flex items-center gap-4 hover:bg-secondary/30 transition-colors">
-                              {/* Image */}
-                              <div
-                                onClick={() => setSelectedImage({ url: product.img, name: product.name })}
-                                className="w-20 h-20 md:w-28 md:h-28 bg-secondary rounded-2xl overflow-hidden border border-border shrink-0 shadow-inner group cursor-pointer"
-                              >
-                                <img src={product.img} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                              </div>
-
-                              {/* Content */}
-                              <div className="grow min-w-0">
-                                <h3 className="font-display font-black text-foreground text-sm md:text-xl truncate uppercase tracking-tight">{product.name}</h3>
-                                <p className="text-xs md:text-sm text-muted-foreground mb-2 font-medium italic">{product.content}</p>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-primary font-black text-base md:text-2xl italic">{formatCurrency(product.discPrice)}</span>
-                                  <span className="text-xs md:text-sm text-muted-foreground/60 line-through font-bold">{formatCurrency(product.price)}</span>
-                                </div>
-                              </div>
-
-                              {/* Add Button / Qty Control */}
-                              <div className="shrink-0 ml-2">
-                                {qty > 0 ? (
-                                  <div className="flex items-center bg-secondary/50 rounded-2xl border border-border overflow-hidden p-1">
-                                    <button
-                                      onClick={() => handleUpdateQty(product.id, -1)}
-                                      className="p-2 md:p-3 hover:bg-card text-muted-foreground hover:text-festive-ruby transition-colors rounded-xl"
-                                    >
-                                      <Minus size={16} strokeWidth={3} />
-                                    </button>
-                                    <span className="w-10 text-center font-black text-foreground text-sm md:text-lg">{qty}</span>
-                                    <button
-                                      onClick={() => handleUpdateQty(product.id, 1)}
-                                      className="p-2 md:p-3 hover:bg-card text-muted-foreground hover:text-primary transition-colors rounded-xl"
-                                    >
-                                      <Plus size={16} strokeWidth={3} />
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => handleUpdateQty(product.id, 1)}
-                                    className="flex items-center gap-2 bg-card border-2 border-primary text-primary px-5 py-2 md:px-8 md:py-3 rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] hover:bg-primary hover:text-primary-foreground transition-all shadow-sm"
-                                  >
-                                    <Plus size={14} /> Add
-                                  </motion.button>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="bg-card rounded-3xl border-2 border-dashed border-border p-20 text-center">
-                    <div className="w-24 h-24 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-                      <SearchIcon className="text-muted-foreground/30 w-12 h-12" />
-                    </div>
-                    <h3 className="text-2xl font-black text-foreground uppercase tracking-widest mb-2">No Products Found</h3>
-                    <p className="text-muted-foreground max-w-xs mx-auto mb-8 font-medium italic">We couldn't find items matching your search. Try another term!</p>
-                  </div>
-                )}
+                <div className="hidden sm:block text-right">
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] italic">Browsing</p>
+                  <p className="text-xs font-black text-primary uppercase tracking-tighter">{selectedCategory === "All" ? "Every Product" : selectedCategory}</p>
+                </div>
               </div>
             </div>
 
+            <div className="space-y-6">
+              {filteredCategories.length > 0 ? (
+                filteredCategories.map(category => (
+                  <div key={category.name} className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                    <div className="bg-primary px-6 py-3">
+                      <h2 className="text-white font-black text-xs md:text-sm uppercase tracking-[0.2em] flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
+                        {category.name}
+                      </h2>
+                    </div>
+                    <div className="divide-y divide-border/30">
+                      {category.products.map(product => {
+                        const qty = quantities[product.id] || 0;
+                        return (
+                          <div key={product.id} className="p-4 md:p-6 flex items-center gap-4 hover:bg-secondary/30 transition-colors">
+                            <div
+                              onClick={() => setSelectedImage({ url: getImageUrl(product.img), name: product.name })}
+                              className="w-20 h-20 md:w-28 md:h-28 bg-secondary rounded-2xl overflow-hidden border border-border shrink-0 shadow-inner group cursor-pointer"
+                            >
+                              <img src={getImageUrl(product.img)} alt={product.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                            </div>
+                            <div className="grow min-w-0">
+                              <h3 className="font-display font-black text-foreground text-sm md:text-xl truncate uppercase tracking-tight">{product.name}</h3>
+                              <p className="text-xs md:text-sm text-muted-foreground mb-2 font-medium italic">{product.content}</p>
+                              <div className="flex items-center gap-3">
+                                <span className="text-primary font-black text-base md:text-2xl italic">{formatCurrency(product.discPrice)}</span>
+                                <span className="text-xs md:text-sm text-muted-foreground/60 line-through font-bold">{formatCurrency(product.price)}</span>
+                              </div>
+                            </div>
+                            <div className="shrink-0 ml-2">
+                              {qty > 0 ? (
+                                <div className="flex items-center bg-secondary/50 rounded-2xl border border-border overflow-hidden p-1">
+                                  <button onClick={() => handleUpdateQty(product.id, -1)} className="p-2 md:p-3 hover:bg-card text-muted-foreground hover:text-festive-ruby transition-colors rounded-xl"><Minus size={16} strokeWidth={3} /></button>
+                                  <span className="w-10 text-center font-black text-foreground text-sm md:text-lg">{qty}</span>
+                                  <button onClick={() => handleUpdateQty(product.id, 1)} className="p-2 md:p-3 hover:bg-card text-muted-foreground hover:text-primary transition-colors rounded-xl"><Plus size={16} strokeWidth={3} /></button>
+                                </div>
+                              ) : (
+                                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => handleUpdateQty(product.id, 1)} className="flex items-center gap-2 bg-card border-2 border-primary text-primary px-5 py-2 md:px-8 md:py-3 rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] hover:bg-primary hover:text-primary-foreground transition-all shadow-sm">
+                                  <Plus size={14} /> Add
+                                </motion.button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-card rounded-3xl border-2 border-dashed border-border p-20 text-center">
+                  <div className="w-24 h-24 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6"><SearchIcon className="text-muted-foreground/30 w-12 h-12" /></div>
+                  <h3 className="text-2xl font-black text-foreground uppercase tracking-widest mb-2">No Products Found</h3>
+                  <p className="text-muted-foreground max-w-xs mx-auto mb-8 font-medium italic">We couldn't find items matching your search. Try another term!</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
-        {/* -- Bottom Order Summary CTA (All Views) -- */}
+        {/* -- Order Summary CTA -- */}
         <AnimatePresence>
           {totals.totalItems > 0 && (
-            <motion.div
-              initial={{ y: 100 }}
-              animate={{ y: 0 }}
-              exit={{ y: 100 }}
-              className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.12)]"
-            >
-              <div className="container-narrow section-padding py-4 flex items-center justify-between gap-4">
+            <motion.div initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.12)]">
+              <div className="container-narrow py-4 px-4 flex items-center justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">
-                    Order Summary
-                  </p>
-                  <p className="text-sm md:text-base font-black text-foreground">
-                    {totals.totalItems} items · <span className="text-primary">{formatCurrency(totals.totalAmount)}</span>
-                  </p>
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground mt-1">
-                    Minimum Order: {formatCurrency(MIN_ORDER_AMOUNT)}
-                  </p>
-                  {isBelowMinimumOrder && (
-                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-festive-ruby mt-1">
-                      Add {formatCurrency(shortfallAmount)} more to checkout
-                    </p>
-                  )}
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">Order Summary</p>
+                  <p className="text-sm md:text-base font-black text-foreground">{totals.totalItems} items · <span className="text-primary">{formatCurrency(totals.totalAmount)}</span></p>
+                  {isBelowMinimumOrder && <p className="text-[10px] font-black uppercase tracking-[0.18em] text-festive-ruby mt-1">Add {formatCurrency(shortfallAmount)} more to checkout</p>}
                 </div>
-
-                <button
-                  onClick={handleNext}
-                  disabled={isBelowMinimumOrder}
-                  className="bg-primary disabled:bg-primary/50 disabled:cursor-not-allowed text-primary-foreground px-5 md:px-7 py-3 rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.18em] shadow-xl active:scale-95 transition-all flex items-center gap-2"
-                >
+                <button onClick={handleNext} disabled={isBelowMinimumOrder} className="bg-primary disabled:bg-primary/50 disabled:cursor-not-allowed text-primary-foreground px-5 md:px-7 py-3 rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.18em] shadow-xl active:scale-95 transition-all flex items-center gap-2">
                   <Send size={16} />
-                  {isBelowMinimumOrder ? "Minimum Required" : "Checkout"}
+                  {isBelowMinimumOrder ? "Min Required" : "Checkout"}
                 </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* -- Image Preview Modal (Shared) -- */}
+        {/* -- Image Preview Modal -- */}
         <AnimatePresence>
           {selectedImage && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedImage(null)}
-              className="fixed inset-0 z-200 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.8, opacity: 0, y: 20 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-card rounded-2xl shadow-2xl relative max-w-2xl w-full p-4 md:p-8 flex flex-col items-center"
-              >
-                <button
-                  onClick={() => setSelectedImage(null)}
-                  className="absolute top-2 right-2 md:top-4 md:right-4 p-2 hover:bg-secondary rounded-full transition-colors text-muted-foreground hover:text-foreground"
-                >
-                  <X className="w-6 h-6" />
-                </button>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedImage(null)} className="fixed inset-0 z-200 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 md:p-8">
+              <motion.div initial={{ scale: 0.8, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.8, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()} className="bg-card rounded-2xl shadow-2xl relative max-w-2xl w-full p-4 md:p-8 flex flex-col items-center">
+                <button onClick={() => setSelectedImage(null)} className="absolute top-2 right-2 md:top-4 md:right-4 p-2 hover:bg-secondary rounded-full transition-colors text-muted-foreground hover:text-foreground"><X className="w-6 h-6" /></button>
                 <div className="w-full aspect-square md:aspect-auto rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-border/50">
-                  <img
-                    src={selectedImage.url}
-                    alt={selectedImage.name}
-                    className="w-full h-full max-h-[70vh] object-contain bg-card"
-                  />
+                  <img src={selectedImage.url} alt={selectedImage.name} loading="lazy" className="w-full h-full max-h-[70vh] object-contain bg-card" />
                 </div>
-                <h3 className="mt-4 md:mt-6 text-lg md:text-2xl font-black text-foreground uppercase tracking-widest text-center">
-                  {selectedImage.name}
-                </h3>
+                <h3 className="mt-4 md:mt-6 text-lg md:text-2xl font-black text-foreground uppercase tracking-widest text-center">{selectedImage.name}</h3>
               </motion.div>
             </motion.div>
           )}

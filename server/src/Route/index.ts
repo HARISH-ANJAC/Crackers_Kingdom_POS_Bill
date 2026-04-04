@@ -12,6 +12,9 @@ import customerRoute from './customerRoute.js';
 import tagRoute from './tagRoute.js';
 import dashboardRoute from './dashboardRoute.js';
 import voiceBillingRoutes from './voiceBillingRoutes.js';
+import clientRoute from './clientRoute.js';
+import uomRoute from './uomRoute.js';
+import bannerRoute from './bannerRoute.js';
 
 const Router = express.Router();
 
@@ -28,6 +31,9 @@ Router.use('/customers', customerRoute);
 Router.use('/tag', tagRoute);
 Router.use('/dashboard', dashboardRoute);
 Router.use('/voice-billing', voiceBillingRoutes);
+Router.use('/client', clientRoute);
+Router.use('/uom', uomRoute);
+Router.use('/banner', bannerRoute);
 
 
 export default Router;

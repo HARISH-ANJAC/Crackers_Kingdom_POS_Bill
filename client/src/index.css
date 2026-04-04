@@ -113,6 +113,13 @@
     45% { opacity: 0.22; }
     100% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
   }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-2px); }
+    40%, 80% { transform: translateX(2px); }
+  }
+
+  --animate-shake: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 @utility text-balance {

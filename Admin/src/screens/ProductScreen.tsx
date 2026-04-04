@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from '../redux/Store';
 import { fetchProducts, createProduct, updateProduct, deleteProduct, updateProductStock, clearError, resetSuccess } from '../redux/Slice/ProductSlice';
 import { fetchCategories } from '../redux/Slice/CategorySlice';
 import { fetchTags } from '../redux/Slice/TagSlice';
+import { fetchUoms } from '../redux/Slice/UomSlice';
 import CustomModal from '../components/common/CustomModal';
 import ConfirmDelete from '../components/common/ConfirmDelete';
 import CustomDropDown from '../components/common/CustomDropDown';
@@ -54,6 +55,7 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
     const { products, isLoading, error, success } = useAppSelector((state) => state.products);
     const { categories } = useAppSelector((state) => state.categories);
     const { tags } = useAppSelector((state) => state.tags);
+    const { uoms } = useAppSelector((state) => state.uoms);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedStatus, setSelectedStatus] = useState<string>('');
@@ -90,6 +92,7 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
         rank: '0',
         mrp: '0',
         sellingPrice: '0',
+        uomId: '',
         isActive: true,
         quantity: '0',
         tags: [] as string[],
@@ -105,6 +108,7 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
         dispatch(fetchProducts());
         dispatch(fetchCategories());
         dispatch(fetchTags());
+        dispatch(fetchUoms());
     }, [dispatch]);
 
     useEffect(() => {
@@ -152,6 +156,10 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
     const tagOptions = useMemo(() => {
         return tags.filter(t => t.isActive).map(tag => ({ label: tag.name, value: tag.id }));
     }, [tags]);
+
+    const uomOptions = useMemo(() => {
+        return uoms.filter(u => u.isActive).map(uom => ({ label: `${uom.name} (${uom.code})`, value: uom.id }));
+    }, [uoms]);
 
     const handlePickImage = useCallback(() => {
         if (Platform.OS === 'web') {
@@ -216,6 +224,7 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
             rank: '0',
             mrp: '0',
             sellingPrice: '0',
+            uomId: uoms.length > 0 ? uoms[0].id : '',
             isActive: true,
             quantity: '0',
             tags: [],
@@ -263,6 +272,7 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
             rank: String(product.rank || 0),
             mrp: String(product.mrp || 0),
             sellingPrice: String(product.sellingPrice || 0),
+            uomId: product.uomId || '',
             isActive: product.isActive,
             quantity: String(product.quantity || 0),
             tags: product.tags || [],
@@ -287,6 +297,7 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
             data.append('rank', formData.rank);
             data.append('mrp', formData.mrp);
             data.append('sellingPrice', formData.sellingPrice);
+            data.append('uomId', formData.uomId);
             data.append('isActive', String(formData.isActive));
             data.append('tags', JSON.stringify(formData.tags));
             if (modalMode === 'add') {
@@ -1046,6 +1057,17 @@ const ProductScreen = ({ navigation, route }: { navigation?: any, route?: any })
                                 items={categoryOptions}
                                 selectedValue={formData.categoryId}
                                 onSelect={(value) => setFormData({ ...formData, categoryId: Array.isArray(value) ? value[0] : value })}
+                                className="w-full"
+                            />
+                        </View>
+
+                        <View style={Platform.OS === 'web' ? { zIndex: 55 } : undefined}>
+                            <Text className="text-sm font-semibold text-gray-700 mb-2">UOM *</Text>
+                            <CustomDropDown
+                                placeholder="Select Unit of Measure"
+                                items={uomOptions}
+                                selectedValue={formData.uomId}
+                                onSelect={(value) => setFormData({ ...formData, uomId: Array.isArray(value) ? value[0] : value })}
                                 className="w-full"
                             />
                         </View>

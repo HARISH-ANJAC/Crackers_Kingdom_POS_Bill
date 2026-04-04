@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { ArrowRight, Menu, Sparkles } from "lucide-react";
+import { ArrowRight, Menu, ShoppingCart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import logo from "@/assets/logo.png";
@@ -15,8 +15,16 @@ const navLinks = [
 const announcement =
   "Premium Sivakasi Crackers  -  Get up to 40% bulk offer  -  Estimate now, confirm in 2 hours  -  Pan India legal parcel delivery  -  100% safe and certified products";
 
+import { useAppSelector } from "@/redux/Store";
+import { useMemo } from "react";
+
 const Navbar = () => {
   const location = useLocation();
+  const quantities = useAppSelector((state) => state.cart.quantities);
+
+  const totalItems = useMemo(() => {
+    return Object.values(quantities).reduce((sum, q) => sum + q, 0);
+  }, [quantities]);
 
   return (
     <>

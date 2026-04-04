@@ -97,31 +97,7 @@ const Contact = () => {
   const [form, setForm] = useState({ name: "", phone: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Check for existing estimate in localStorage
-    const saved = localStorage.getItem("last_estimate");
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        // If it's fresh (last 2 hours), pre-fill
-        const diff = Date.now() - new Date(data.timestamp).getTime();
-        if (diff < 1000 * 60 * 60 * 2) {
-          setForm(prev => ({
-            ...prev,
-            subject: `Estimate Submission: ${data.count} Items — ₹${data.total.toLocaleString("en-IN")}`,
-            message: `Selected Products:\n${data.items}\n\nTotal Estimate: ₹${data.total.toLocaleString("en-IN")}\n\nPlease confirm availability and nearest parcel center for delivery.`
-          }));
-          toast.success("Ready to submit! Your estimate has been pre-filled.");
-        }
-      } catch (e) { console.error("Error parsing estimate", e); }
-    }
-  }, []);
 
-  const handleClearEstimate = () => {
-    localStorage.removeItem("last_estimate");
-    setForm({ name: "", phone: "", subject: "", message: "" });
-    toast("Estimate cleared. You can now send a general message.");
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,8 +108,7 @@ const Contact = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      localStorage.removeItem("last_estimate");
-      toast.success("Estimate submitted! Our team will contact you within 2 hours.");
+      toast.success("Message submitted! Our team will contact you within 2 hours.");
       setForm({ name: "", phone: "", subject: "", message: "" });
     }, 1200);
   };
@@ -237,18 +212,9 @@ const Contact = () => {
                   size="lg"
                   disabled={loading}
                 >
-                  {loading ? "Submitting Estimate..." : (form.subject.includes("Estimate") ? "Submit My Estimate" : "Send Message")}
+                  {loading ? "Sending..." : "Send Message"}
                   {!loading && <ArrowRight size={16} />}
                 </Button>
-                {form.subject.includes("Estimate") && (
-                  <button
-                    type="button"
-                    onClick={handleClearEstimate}
-                    className="w-full text-xs text-muted-foreground hover:text-red-600 transition-colors mt-2 underline underline-offset-4"
-                  >
-                    Clear this estimate and send a general enquiry instead
-                  </button>
-                )}
               </form>
             </div>
           </ScrollReveal>

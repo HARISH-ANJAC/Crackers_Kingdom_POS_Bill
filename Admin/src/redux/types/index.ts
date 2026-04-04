@@ -84,9 +84,36 @@ export interface Tag {
   updatedAt?: string;
 }
 
+export interface Uom {
+  id: string;
+  name: string;
+  code: string;
+  description?: string;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  description?: string;
+  badge?: string;
+  badgeIcon?: string;
+  image: string;
+  ctaText?: string;
+  ctaLink?: string;
+  rank: number;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Product {
   id: string;
   categoryId: string;
+  uomId: string;
+  uom?: Uom;
   name: string;
   slug: string;
   image?: string;
@@ -94,6 +121,7 @@ export interface Product {
   rank: number;
   mrp: string | number;
   sellingPrice: string | number;
+  conversionQty?: number;
   isActive: boolean;
   tags?: string[]; // Array of tag IDs or tag names
   quantity?: number;

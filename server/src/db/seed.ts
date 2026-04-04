@@ -82,7 +82,9 @@ async function seed() {
             { name: 'Uploads', slug: 'uploads' },
             { name: 'Video', slug: 'video' },
             { name: 'Tags', slug: 'tag' },
-            { name: 'Settings', slug: 'settings' }
+            { name: 'Settings', slug: 'settings' },
+            { name: 'UOM', slug: 'uom' },
+            { name: 'Banners', slug: 'banner' }
         ];
 
         // 4. Remove unused modules (like Brand, SubCategory)

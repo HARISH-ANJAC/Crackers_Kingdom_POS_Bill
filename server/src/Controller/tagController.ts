@@ -5,12 +5,14 @@ import { eq, desc } from "drizzle-orm";
 
 export const createTag = async (req: Request, res: Response) => {
   try {
-    const { name, slug, isActive, color } = req.body;
+    const { name, slug, isActive, color, rank, showLimit } = req.body;
 
     const newTag = await db.insert(tags).values({
       name,
       slug,
       color: color ? color.substring(0, 7) : undefined,
+      rank: rank ? parseInt(rank) : 0,
+      showLimit: showLimit ? parseInt(showLimit) : 0,
       isActive: isActive === 'true' || isActive === true,
     }).returning();
 
@@ -27,7 +29,7 @@ export const createTag = async (req: Request, res: Response) => {
 
 export const getAllTags = async (req: Request, res: Response) => {
   try {
-    const allTags = await db.select().from(tags).orderBy(desc(tags.createdAt));
+    const allTags = await db.select().from(tags).orderBy(tags.rank, desc(tags.createdAt));
     res.status(200).json({ success: true, data: allTags });
   } catch (error: any) {
     console.error("Error in getAllTags:", error);
@@ -54,13 +56,15 @@ export const getTagById = async (req: Request, res: Response) => {
 export const updateTag = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, slug, isActive, color } = req.body;
+    const { name, slug, isActive, color, rank, showLimit } = req.body;
     
     const updatedTag = await db.update(tags)
       .set({
         name,
         slug,
         color: color ? color.substring(0, 7) : undefined,
+        rank: rank !== undefined ? parseInt(rank) : undefined,
+        showLimit: showLimit !== undefined ? parseInt(showLimit) : undefined,
         isActive: isActive !== undefined ? (isActive === 'true' || isActive === true) : undefined,
         updatedAt: new Date(),
       })

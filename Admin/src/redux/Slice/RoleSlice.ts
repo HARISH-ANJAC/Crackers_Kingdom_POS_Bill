@@ -23,7 +23,9 @@ import {
   Package,
   UploadCloud,
   ShoppingCart,
-  Tag
+  Tag,
+  Ruler,
+  Image as ImageIcon
 } from 'lucide-react-native';
 import { BACKEND_API_URL } from '../../Constants';
 
@@ -175,6 +177,15 @@ export const STATIC_MENU_ITEMS: MenuItem[] = [
         module: 'tag',
         order: 5,
         permissions: { read: true, write: true, create: true, delete: true }
+      },
+      {
+        id: 'uom',
+        label: 'Manage UOM',
+        icon: Ruler,
+        path: 'uom',
+        module: 'uom',
+        order: 6,
+        permissions: { read: true, write: true, create: true, delete: true }
       }
     ]
   },
@@ -239,6 +250,15 @@ export const STATIC_MENU_ITEMS: MenuItem[] = [
         path: 'uploads',
         module: 'uploads',
         order: 3,
+        permissions: { read: true, write: true, create: true, delete: true }
+      },
+      {
+        id: 'banner',
+        label: 'Banners',
+        icon: ImageIcon,
+        path: 'banner',
+        module: 'banner',
+        order: 4,
         permissions: { read: true, write: true, create: true, delete: true }
       }
     ]

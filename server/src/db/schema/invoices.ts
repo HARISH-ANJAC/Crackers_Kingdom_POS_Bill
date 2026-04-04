@@ -80,6 +80,7 @@ export const invoiceItems = pgTable("invoice_items", {
   productId: uuid("product_id"), // Decoupled from products table at DB level
   
   productName: varchar("product_name", { length: 255 }), // Historical snapshot
+  productContent: text("product_content"), // Historical snapshot
   productImage: text("product_image"), // Historical snapshot
   
   quantity: integer("quantity").notNull(),
@@ -131,6 +132,7 @@ export const orderItems = pgTable("order_items", {
   productId: uuid("product_id"), // Decoupled from products table at DB level
   
   productName: varchar("product_name", { length: 255 }), // Historical snapshot
+  productContent: text("product_content"), // Historical snapshot
   productImage: text("product_image"), // Historical snapshot
   
   quantity: integer("quantity").notNull(),

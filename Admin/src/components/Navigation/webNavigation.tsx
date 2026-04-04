@@ -28,6 +28,8 @@ import PDFViewer from '../../screens/PDFViewer';
 import SettingsScreen from '../../screens/SettingsScreen';
 import CustomerScreen from '../../screens/CustomerScreen';
 import TagScreen from '../../screens/TagScreen';
+import UomScreen from '../../screens/UomScreen';
+import BannerScreen from '../../screens/BannerScreen';
 
 const AdminStack = createStackNavigator<DrawerParamList>();
 
@@ -177,6 +179,8 @@ const WebNavigation = ({ navigation }: WebNavigationProps) => {
                     <AdminStack.Screen name="tag" component={TagScreen} />
                     <AdminStack.Screen name="customers" component={CustomerScreen} />
                     <AdminStack.Screen name="settings" component={SettingsScreen} />
+                    <AdminStack.Screen name="uom" component={UomScreen} />
+                    <AdminStack.Screen name="banner" component={BannerScreen} />
                 </AdminStack.Navigator>
             </View>
         </View>

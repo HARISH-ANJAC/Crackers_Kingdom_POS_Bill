@@ -54,6 +54,8 @@ const linking: LinkingOptions<any> = {
           customers: 'customers',
           users: 'users',
           roles: 'roles',
+          uom: 'uom',
+          banner: 'banner',
         },
       },
     },

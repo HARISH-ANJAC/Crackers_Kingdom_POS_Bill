@@ -1,4 +1,47 @@
-export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInfo: any, isCopy: boolean = false) => {
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const SHOP_DETAILS = {
+    shopName: 'CRACKERS KINGDOM',
+    legalName: 'M/S NANDHINI TRADERS',
+    addressLine1: 'Survey No: 299/13A1C, 299/15A2, Door No: 3/1362/20',
+    addressLine2: 'Bharathi Nagar - II, Viswanatham',
+    addressLine3: 'Sivakasi - 626189, Virudhunagar District',
+    addressLine4: 'Tamil Nadu, India',
+    contactLine: '+91 81442 71571 | crackerskingdom26@gmail.com',
+    gstinLine: 'GSTIN: 30239HHJ343HG393',
+} as const;
+
+const resolveLogoDataUrl = () => {
+    const candidatePaths = [
+        path.resolve(__dirname, '../../assets/logo.png'),
+        path.resolve(__dirname, '../../../src/assets/logo.png'),
+        path.resolve(process.cwd(), 'src/assets/logo.png'),
+        path.resolve(process.cwd(), 'server/src/assets/logo.png'),
+    ];
+
+    const logoPath = candidatePaths.find((candidate) => fs.existsSync(candidate));
+    if (!logoPath) {
+        return '';
+    }
+
+    const imageBuffer = fs.readFileSync(logoPath);
+    return `data:image/png;base64,${imageBuffer.toString('base64')}`;
+};
+
+const logoDataUrl = resolveLogoDataUrl();
+
+const formatCurrency = (value: unknown) => {
+    const numericValue = Number.parseFloat(String(value ?? 0));
+    const safeValue = Number.isFinite(numericValue) ? numericValue : 0;
+    return `&#8377;${safeValue.toFixed(2)}`;
+};
+
+export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, _shopInfo: any, isCopy: boolean = false) => {
     const {
         orderNumber,
         createdAt,
@@ -6,29 +49,31 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
         items,
         subTotal,
         totalAmount,
-        paymentMethod,
         notes,
-        status
     } = orderData;
 
     const date = new Date(createdAt).toLocaleDateString('en-IN', {
         day: '2-digit',
         month: 'short',
-        year: 'numeric'
+        year: 'numeric',
     });
 
-    const itemRows = items.map((item: any, index: number) => `
+    const itemRows = (items || []).map((item: any, index: number) => `
         <tr>
             <td>${index + 1}</td>
             <td>
                 <div class="product-name">${item.productName || item.product?.name || 'Unknown Product'}</div>
-                <div class="product-slug">${item.product?.slug || ''}</div>
             </td>
+            <td>${item.productContent || (item.product?.uom?.code ? `1${item.product.uom.code}` : '')}</td>
             <td class="text-right">${item.quantity}</td>
-            <td class="text-right">₹${parseFloat(item.unitPrice).toFixed(2)}</td>
-            <td class="text-right">₹${parseFloat(item.totalPrice).toFixed(2)}</td>
+            <td class="text-right">${formatCurrency(item.unitPrice)}</td>
+            <td class="text-right">${formatCurrency(item.totalPrice)}</td>
         </tr>
     `).join('');
+
+    const brandLogoMarkup = logoDataUrl
+        ? `<img src="${logoDataUrl}" alt="Crackers Kingdom" class="brand-logo-image" />`
+        : '<span class="brand-logo-fallback">CK</span>';
 
     return `
     <!DOCTYPE html>
@@ -39,7 +84,9 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
         <title>Order ${orderNumber}</title>
         <style>
             :root {
-                --primary: #dc2626; /* Red for orders */
+                --primary: hsl(43 65% 52%);
+                --festive-gold: hsl(43 75% 52%);
+                --footer-bg: hsl(240 10% 10%);
                 --text-main: #1f2937;
                 --text-muted: #6b7280;
                 --border: #e5e7eb;
@@ -49,6 +96,7 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
             * {
                 box-sizing: border-box;
                 -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
             body {
@@ -69,21 +117,95 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
-                margin-bottom: 40px;
+                gap: 20px;
+                margin-bottom: 32px;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 24px;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: flex-start;
+                gap: 14px;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .brand-logo-shell {
+                position: relative;
+                width: 94px;
+                height: 94px;
+                border-radius: 999px;
+                padding: 2px;
+                background: linear-gradient(135deg, var(--primary), var(--festive-gold), var(--primary));
+                flex-shrink: 0;
+            }
+
+            .brand-logo-inner {
+                position: relative;
+                z-index: 2;
+                width: 100%;
+                height: 100%;
+                border-radius: 999px;
+                background: rgba(23, 23, 28, 0.95);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            .brand-logo-image {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                border-radius: 999px;
+                padding: 4px;
+            }
+
+            .brand-logo-fallback {
+                color: white;
+                font-size: 28px;
+                font-weight: 800;
+                letter-spacing: 0.05em;
             }
 
             .brand-section h1 {
                 margin: 0;
                 color: var(--primary);
-                font-size: 28px;
+                font-size: 27px;
+                line-height: 1.15;
                 font-weight: 800;
-                letter-spacing: -0.025em;
+                letter-spacing: 0.01em;
             }
 
-            .brand-section p {
-                margin: 4px 0 0;
-                color: var(--text-muted);
-                font-size: 14px;
+            .brand-legal {
+                margin: 5px 0 8px;
+                color: #111827;
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 0.03em;
+            }
+
+            .brand-line {
+                margin: 1px 0;
+                color: var(--text-main);
+                font-size: 12.5px;
+                line-height: 1.35;
+            }
+
+            .brand-contact {
+                margin-top: 7px;
+                font-size: 12.5px;
+                font-weight: 600;
+                color: #111827;
+            }
+
+            .brand-gstin {
+                margin-top: 3px;
+                font-size: 12.5px;
+                font-weight: 700;
+                color: #111827;
             }
 
             .invoice-meta {
@@ -91,7 +213,7 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
             }
 
             .invoice-title {
-                font-size: 32px;
+                font-size: 30px;
                 font-weight: 700;
                 margin-bottom: 8px;
                 text-transform: uppercase;
@@ -110,7 +232,7 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
 
             .info-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 gap: 40px;
                 margin-bottom: 40px;
                 padding: 24px;
@@ -207,25 +329,12 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
                 font-size: 12px;
             }
 
-            .status-badge {
-                display: inline-block;
-                padding: 4px 12px;
-                border-radius: 9999px;
-                font-size: 12px;
-                font-weight: 600;
-                text-transform: uppercase;
-            }
-
-            .status-pending { background: #fef9c3; color: #854d0e; }
-            .status-confirmed { background: #dcfce7; color: #166534; }
-            .status-converted { background: #e0f2fe; color: #075985; }
-
             .qr-code {
-                width: 80px;
-                height: 80px;
+                width: 82px;
+                height: 82px;
                 border: 1px solid var(--border);
-                padding: 4px;
-                border-radius: 8px;
+                padding: 5px;
+                border-radius: 10px;
                 background: white;
             }
 
@@ -245,15 +354,27 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
     <body>
         <div class="invoice-container">
             <div class="header">
-                <div class="brand-section">
-                    <h1>${shopInfo.shopName.toUpperCase()}</h1>
-                    <p>${shopInfo.shopAddress}</p>
-                    <p>Mob: ${shopInfo.shopPhone}</p>
+                <div class="header-left">
+                    <div class="brand-logo-shell">
+                        <div class="brand-logo-inner">
+                            ${brandLogoMarkup}
+                        </div>
+                    </div>
+                    <div class="brand-section">
+                        <h1>${SHOP_DETAILS.shopName}</h1>
+                        <p class="brand-legal">${SHOP_DETAILS.legalName}</p>
+                        <p class="brand-line">${SHOP_DETAILS.addressLine1}</p>
+                        <p class="brand-line">${SHOP_DETAILS.addressLine2}</p>
+                        <p class="brand-line">${SHOP_DETAILS.addressLine3}</p>
+                        <p class="brand-line">${SHOP_DETAILS.addressLine4}</p>
+                        <p class="brand-contact">${SHOP_DETAILS.contactLine}</p>
+                        <p class="brand-gstin">${SHOP_DETAILS.gstinLine}</p>
+                    </div>
                 </div>
                 <div class="header-right">
                     <img src="${qrCodeDataUrl}" class="qr-code" />
                     <div class="invoice-meta">
-                        <div class="invoice-title">${isCopy ? 'Order Bill Copy' : 'Order Bill'}</div>
+                        <div class="invoice-title">${isCopy ? 'Order Receipt Copy' : 'Order Receipt'}</div>
                         <div class="meta-item">No: <strong>${orderNumber}</strong></div>
                         <div class="meta-item">Date: <strong>${date}</strong></div>
                     </div>
@@ -267,11 +388,6 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
                     <p>${customer.phone}</p>
                     <p>${customer.address || ''}</p>
                 </div>
-                <div class="info-box">
-                    <h3>Order Status:</h3>
-                    <p>Method: <strong>${paymentMethod.toUpperCase()}</strong></p>
-                    <p>Status: <span class="status-badge status-${status}">${status}</span></p>
-                </div>
             </div>
 
             <table>
@@ -279,9 +395,10 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
                     <tr>
                         <th style="width: 50px;">#</th>
                         <th>Item Description</th>
-                        <th class="text-right" style="width: 80px;">Qty</th>
-                        <th class="text-right" style="width: 120px;">Price</th>
-                        <th class="text-right" style="width: 120px;">Total</th>
+                        <th style="width: 80px;">Content</th>
+                        <th class="text-right" style="width: 60px;">Qty</th>
+                        <th class="text-right" style="width: 100px;">Price</th>
+                        <th class="text-right" style="width: 100px;">Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -293,11 +410,11 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
                 <table class="summary-table">
                     <tr>
                         <td>Subtotal</td>
-                        <td class="text-right">₹${parseFloat(subTotal).toFixed(2)}</td>
+                        <td class="text-right">${formatCurrency(subTotal)}</td>
                     </tr>
                     <tr class="total">
                         <td>ESTIMATED TOTAL</td>
-                        <td class="text-right">₹${parseFloat(totalAmount).toFixed(2)}</td>
+                        <td class="text-right">${formatCurrency(totalAmount)}</td>
                     </tr>
                 </table>
             </div>
@@ -311,7 +428,7 @@ export const generateOrderHTML = (orderData: any, qrCodeDataUrl: string, shopInf
 
             <div class="footer">
                 <p>Thank you for your enquiry! This order is undergoing processing.</p>
-                <p style="margin-top: 8px;">This is a system-generated order bill.</p>
+                <p style="margin-top: 8px;">This is a system-generated order receipt.</p>
             </div>
         </div>
     </body>
