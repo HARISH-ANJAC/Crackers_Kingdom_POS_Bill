@@ -140,11 +140,17 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 const PORT = process.env.PORT || 5000;
 
 
+let isStarting = false;
 const startServer = async () => {
+    if (isStarting) {
+        console.warn('⚠️ startServer called again, ignoring.');
+        return;
+    }
+    isStarting = true;
     try {
         console.log('🔄 Initializing server...');
 
-        const server = app.listen(PORT, () => {
+        const server = app.listen(Number(PORT), '0.0.0.0', () => {
             console.log(`🚀 Server is running on port ${PORT}`);
             if (process.env.NODE_ENV === "development") {
                 console.log(`   ➜ Local:   http://localhost:${PORT}`);
@@ -181,9 +187,8 @@ const startServer = async () => {
 //     : false;
 
 // if (isDirectRun) {
-if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
-    startServer();
-}
-// }
+
+startServer();
+
 
 export default app;
