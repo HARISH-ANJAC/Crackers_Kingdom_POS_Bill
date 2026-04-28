@@ -45,73 +45,73 @@ const LOCAL_IP = getLocalIP();
 app.use("/api", apiRouter);
 
 // ─── APK Build Job Store (in-memory) ────────────────────────────────────────
-type JobStatus = 'pending' | 'building' | 'success' | 'error';
-interface ApkJob {
-    status: JobStatus;
-    apk_url?: string;
-    error?: string;
-    startedAt: Date;
-}
-const apkJobs = new Map<string, ApkJob>();
+// type JobStatus = 'pending' | 'building' | 'success' | 'error';
+// interface ApkJob {
+//     status: JobStatus;
+//     apk_url?: string;
+//     error?: string;
+//     startedAt: Date;
+// }
+// const apkJobs = new Map<string, any>();
 
-// POST /build-apk → kicks off build in background, returns jobId immediately
-app.post('/build-apk', (req: Request, res: Response) => {
-    const jobId = `apk-${Date.now()}`;
-    const adminPath = path.resolve(__dirname, '../../Admin');
-    const outputDir = path.resolve(__dirname, '../uploads/apk');
-    const apkFileName = `app-release-${Date.now()}.apk`;
+// // POST /build-apk → kicks off build in background, returns jobId immediately
+// app.post('/build-apk', (req: Request, res: Response) => {
+//     const jobId = `apk-${Date.now()}`;
+//     const adminPath = path.resolve(__dirname, '../../Admin');
+//     const outputDir = path.resolve(__dirname, '../uploads/apk');
+//     const apkFileName = `app-release-${Date.now()}.apk`;
 
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-    }
+//     if (!fs.existsSync(outputDir)) {
+//         fs.mkdirSync(outputDir, { recursive: true });
+//     }
 
-    // Register job as pending straight away
-    apkJobs.set(jobId, { status: 'pending', startedAt: new Date() });
+//     // Register job as pending straight away
+//     apkJobs.set(jobId, { status: 'pending', startedAt: new Date() });
 
-    // Kick off build in background — don't await
-    const buildCommand = `docker build -t admin-android-builder -f Dockerfile.android .`;
-    const extractCommand = `docker run --rm -v "${outputDir}:/output" admin-android-builder cp /app/android/app/build/outputs/apk/release/app-release.apk /output/${apkFileName}`;
+//     // Kick off build in background — don't await
+//     const buildCommand = `docker build -t admin-android-builder -f Dockerfile.android .`;
+//     const extractCommand = `docker run --rm -v "${outputDir}:/output" admin-android-builder cp /app/android/app/build/outputs/apk/release/app-release.apk /output/${apkFileName}`;
 
-    apkJobs.set(jobId, { status: 'building', startedAt: new Date() });
+//     apkJobs.set(jobId, { status: 'building', startedAt: new Date() });
 
-    exec(buildCommand, { cwd: adminPath, maxBuffer: 1024 * 1024 * 50 }, (buildErr, _buildStdout, buildStderr) => {
-        if (buildErr) {
-            console.error('[APK Build] Docker build failed:', buildStderr || buildErr.message);
-            apkJobs.set(jobId, { status: 'error', error: buildStderr || buildErr.message, startedAt: apkJobs.get(jobId)!.startedAt });
-            return;
-        }
+//     exec(buildCommand, { cwd: adminPath, maxBuffer: 1024 * 1024 * 50 }, (buildErr, _buildStdout, buildStderr) => {
+//         if (buildErr) {
+//             console.error('[APK Build] Docker build failed:', buildStderr || buildErr.message);
+//             apkJobs.set(jobId, { status: 'error', error: buildStderr || buildErr.message, startedAt: apkJobs.get(jobId)!.startedAt });
+//             return;
+//         }
 
-        exec(extractCommand, { cwd: adminPath }, (extractErr, _extractStdout, extractStderr) => {
-            if (extractErr) {
-                console.error('[APK Build] APK extraction failed:', extractStderr || extractErr.message);
-                apkJobs.set(jobId, { status: 'error', error: extractStderr || extractErr.message, startedAt: apkJobs.get(jobId)!.startedAt });
-                return;
-            }
+//         exec(extractCommand, { cwd: adminPath }, (extractErr, _extractStdout, extractStderr) => {
+//             if (extractErr) {
+//                 console.error('[APK Build] APK extraction failed:', extractStderr || extractErr.message);
+//                 apkJobs.set(jobId, { status: 'error', error: extractStderr || extractErr.message, startedAt: apkJobs.get(jobId)!.startedAt });
+//                 return;
+//             }
 
-            const apkUrl = `/uploads/apk/${apkFileName}`;
-            console.log('[APK Build] Success:', apkUrl);
-            apkJobs.set(jobId, { status: 'success', apk_url: apkUrl, startedAt: apkJobs.get(jobId)!.startedAt });
-        });
-    });
+//             const apkUrl = `/uploads/apk/${apkFileName}`;
+//             console.log('[APK Build] Success:', apkUrl);
+//             apkJobs.set(jobId, { status: 'success', apk_url: apkUrl, startedAt: apkJobs.get(jobId)!.startedAt });
+//         });
+//     });
 
-    // Return job ID immediately — client polls /build-apk/:jobId
-    return res.status(202).json({ status: 'accepted', jobId, message: 'APK build started. Poll /build-apk/' + jobId + ' for progress.' });
-});
+//     // Return job ID immediately — client polls /build-apk/:jobId
+//     return res.status(202).json({ status: 'accepted', jobId, message: 'APK build started. Poll /build-apk/' + jobId + ' for progress.' });
+// });
 
 // GET /build-apk/:jobId → poll for build status
-app.get('/build-apk/:jobId', (req: Request, res: Response) => {
-    const job = apkJobs.get(req.params.jobId as string);
-    if (!job) {
-        return res.status(404).json({ status: 'error', message: 'Job not found' });
-    }
-    return res.json({
-        jobId: req.params.jobId,
-        status: job.status,
-        apk_url: job.apk_url,
-        error: job.error,
-        startedAt: job.startedAt,
-    });
-});
+// app.get('/build-apk/:jobId', (req: Request, res: Response) => {
+//     const job = apkJobs.get(req.params.jobId as string);
+//     if (!job) {
+//         return res.status(404).json({ status: 'error', message: 'Job not found' });
+//     }
+//     return res.json({
+//         jobId: req.params.jobId,
+//         status: job.status,
+//         apk_url: job.apk_url,
+//         error: job.error,
+//         startedAt: job.startedAt,
+//     });
+// });
 
 
 const healthHandler = (_req: Request, res: Response) => {
@@ -176,12 +176,14 @@ const startServer = async () => {
     }
 };
 
-const isDirectRun = process.argv[1]
-    ? path.resolve(process.argv[1]) === __filename
-    : false;
+// const isDirectRun = process.argv[1]
+//     ? path.resolve(process.argv[1]) === __filename
+//     : false;
 
-if (isDirectRun) {
+// if (isDirectRun) {
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
     startServer();
 }
+// }
 
 export default app;
