@@ -18,26 +18,24 @@ import {
 ========================= */
 
 export const banners = pgTable(
-  "banners",
+  "hero_slides",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    title: text("title").notNull(), // Supports multiline with '\n'
-    description: text("description"),
-    badge: varchar("badge", { length: 255 }),
-    badgeIcon: varchar("badge_icon", { length: 50 }), // Lucide icon name (e.g., 'Sparkles')
-    
     image: text("image").notNull(),
-    ctaText: varchar("cta_text", { length: 100 }).default("Get My Estimate"),
-    ctaLink: varchar("cta_link", { length: 255 }).default("/products"),
-    
-    rank: integer("display_order").default(0).notNull(),
-    isActive: boolean("status").default(true).notNull(),
+    badgeIcon: varchar("badge_icon", { length: 50 }).notNull(),
+    badge: varchar("badge", { length: 120 }).notNull(),
+    title: varchar("title", { length: 60 }).notNull(), // Supports multiline with '\n'
+    desc: text("description").notNull(),
+    cta: varchar("cta", { length: 30 }).notNull().default("Get My Estimate"),
+    link: varchar("link", { length: 200 }).notNull().default("/products"),
+    displayOrder: integer("display_order").default(1).notNull(),
+    status: boolean("status").default(true).notNull(),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
-    rankIdx: index("banners_display_order_idx").on(table.rank),
+    orderIdx: index("hero_slides_display_order_idx").on(table.displayOrder),
   })
 );
 

@@ -8,7 +8,7 @@ import fs from 'fs';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
 import morgan from 'morgan';
-
+//testing
 dotenv.config();
 
 const app = express();
@@ -18,28 +18,28 @@ const __dirname = path.dirname(__filename);
 // ✅ Allow all origins and methods
 // server.ts - Update CORS configuration
 app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
-    credentials: true,
-  })
+    cors({
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+        credentials: true,
+    })
 );
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use("/uploads", cors(), express.static(path.join(__dirname, "../uploads")));
 app.use(morgan('dev'));
 const getLocalIP = (): string => {
-  const interfaces = os.networkInterfaces();
+    const interfaces = os.networkInterfaces();
 
-  for (const name of Object.keys(interfaces)) {
-    for (const net of interfaces[name] ?? []) {
-      if (net.family === "IPv4" && !net.internal) {
-        return net.address;
-      }
+    for (const name of Object.keys(interfaces)) {
+        for (const net of interfaces[name] ?? []) {
+            if (net.family === "IPv4" && !net.internal) {
+                return net.address;
+            }
+        }
     }
-  }
-  return "localhost";
+    return "localhost";
 };
 const LOCAL_IP = getLocalIP();
 app.use("/api", apiRouter);
@@ -114,9 +114,12 @@ app.get('/build-apk/:jobId', (req: Request, res: Response) => {
 });
 
 
-app.get('/health', (req, res) => {
+const healthHandler = (_req: Request, res: Response) => {
     res.status(200).json({ status: 'ok', timestamp: new Date() });
-});
+};
+
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 app.get('/', (req, res) => {
     res.json({ msg: 'Crackers POS with Billing API Server Running!' });
@@ -140,11 +143,11 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
     try {
         console.log('🔄 Initializing server...');
-        
+
         const server = app.listen(PORT, () => {
             console.log(`🚀 Server is running on port ${PORT}`);
             if (process.env.NODE_ENV === "development") {
-                console.log(`   ➜ Local:   http://localhost:${PORT}`); 
+                console.log(`   ➜ Local:   http://localhost:${PORT}`);
 
                 if (LOCAL_IP !== "localhost") {
                     console.log(`   ➜ Network: http://${LOCAL_IP}:${PORT}`);
@@ -173,4 +176,12 @@ const startServer = async () => {
     }
 };
 
-startServer();
+const isDirectRun = process.argv[1]
+    ? path.resolve(process.argv[1]) === __filename
+    : false;
+
+if (isDirectRun) {
+    startServer();
+}
+
+export default app;

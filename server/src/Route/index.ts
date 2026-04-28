@@ -15,6 +15,7 @@ import voiceBillingRoutes from './voiceBillingRoutes.js';
 import clientRoute from './clientRoute.js';
 import uomRoute from './uomRoute.js';
 import bannerRoute from './bannerRoute.js';
+import { getActiveHeroSlides } from '../Controller/bannerController.js';
 
 const Router = express.Router();
 
@@ -34,6 +35,7 @@ Router.use('/voice-billing', voiceBillingRoutes);
 Router.use('/client', clientRoute);
 Router.use('/uom', uomRoute);
 Router.use('/banner', bannerRoute);
+Router.get('/hero-slides', getActiveHeroSlides);
 
 
 export default Router;
